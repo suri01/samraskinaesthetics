@@ -1,0 +1,24 @@
+# OS / editor
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# Dependencies & build (website)
+website/node_modules/
+website/.next/
+website/out/
+website/coverage/
+website/.turbo/
+website/*.tsbuildinfo
+
+# Env
+.env
+.env*.local
+website/.env
+website/.env*.local
+
+# Debug / misc
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
