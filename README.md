@@ -1,12 +1,13 @@
 # Samra Skin & Aesthetics
 
-Monorepo for the Samra Skin & Aesthetics clinic website.
+Monorepo for Samra Skin & Aesthetics.
 
 - **Website (Next.js):** [`website/`](./website)
+- **Clinic management (Next.js):** [`clinic-management/`](./clinic-management)
 - **Planned domain:** `samraskinaesthetics.com`
 - **Stack:** Next.js App Router · TypeScript · Tailwind · Vercel-ready
 
-## Run locally
+## Website — run locally
 
 ```bash
 cd website
@@ -16,27 +17,34 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Production build check:
+## Clinic management — run locally
+
+Requires local PostgreSQL (`samra_clinic` database).
 
 ```bash
-cd website
-npm run build
-npm start
+cd clinic-management
+cp .env.example .env
+npm install
+npm run db:push
+npm run db:seed
+npm run dev
 ```
 
-## What’s next (not done in this scaffold)
+- Staff: [http://localhost:3001/staff](http://localhost:3001/staff)
+- iPad: [http://localhost:3001/ipad](http://localhost:3001/ipad)
 
-1. **Vercel** — connect this GitHub repo and deploy the `website` directory (or set Root Directory to `website`).
-2. **Namecheap DNS** — point `samraskinaesthetics.com` at Vercel when ready. Do not buy hosting elsewhere for this MVP.
-3. **Real content** — replace placeholder treatments, credentials, address, phone, map, reviews, and logo/photos.
-4. **Contact delivery** — wire the form to Resend or Formspree.
-5. **Booking** — swap the phone CTA for Cal.com / Jane / clinic software when chosen.
+Sample staff password is printed by the seed script (fictional data only).
 
 ## Repo layout
 
 ```
 samraskinaesthetics/
   README.md
-  website/          ← Next.js app
-  (future folders can sit alongside website/)
+  website/               ← public marketing site
+  clinic-management/     ← internal clinic ops (auth, appointments, iPad forms, invoices)
 ```
+
+## Notes
+
+- Clinic management uses sample data only — not for real patients until privacy/clinical advisers review.
+- Stripe and WhatsApp are mocked unless credentials are set (see `clinic-management/.env.example`).
