@@ -67,14 +67,12 @@ export default async function SettingsPage() {
               </tr>
             </thead>
             <tbody>
-              {Object.entries(ROLE_PERMISSIONS)
-                .filter(([role]) => role === "admin" || role === "practitioner")
-                .map(([role, perms]) => (
-                  <tr key={role}>
-                    <td style={{ textTransform: "capitalize" }}>{role}</td>
-                    <td className="muted">{perms.join(", ")}</td>
-                  </tr>
-                ))}
+              {Object.entries(ROLE_PERMISSIONS).map(([role, perms]) => (
+                <tr key={role}>
+                  <td style={{ textTransform: "capitalize" }}>{role}</td>
+                  <td className="muted">{perms.join(", ")}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
           <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}>Staff</h3>
