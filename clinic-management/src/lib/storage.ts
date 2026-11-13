@@ -52,4 +52,5 @@ export const ALLOWED_UPLOAD_TYPES = new Set([
   "application/pdf",
 ]);
 
-export const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+/** High-res iPad JPEG at quality 1 can exceed 8MB. */
+export const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;

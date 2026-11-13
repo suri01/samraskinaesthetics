@@ -27,8 +27,8 @@ export default async function IpadFormsPage() {
         <p className="badge badge--gold">Your appointment</p>
         <h1>{ctx.serviceName}</h1>
         <p className="muted">
-          Hello {ctx.customerName}. Please complete the form and consent below. Session expires
-          automatically.
+          Hello {ctx.customerName}. Please complete the form, optional clinical photos, and consent
+          below. This iPad session only covers your appointment and expires automatically.
         </p>
         <IpadFormsClient
           templateId={intake?.id ?? ""}

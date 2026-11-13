@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { IpadCameraCapture } from "@/components/IpadCameraCapture";
 
 export function IpadFormsClient(props: {
   templateId: string;
@@ -14,6 +15,7 @@ export function IpadFormsClient(props: {
   const [signedName, setSignedName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [photoCount, setPhotoCount] = useState(0);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -85,6 +87,19 @@ export function IpadFormsClient(props: {
           </div>
         );
       })}
+
+      <div className="panel" style={{ background: "rgba(255,255,255,0.5)" }}>
+        <IpadCameraCapture onCountChange={setPhotoCount} />
+        {photoCount === 0 ? (
+          <p className="muted" style={{ marginBottom: 0 }}>
+            Photos are optional for this sample flow — capture at least one if the clinician asks.
+          </p>
+        ) : (
+          <p className="ok" style={{ marginBottom: 0 }}>
+            {photoCount} photo{photoCount === 1 ? "" : "s"} saved to this appointment.
+          </p>
+        )}
+      </div>
 
       <div className="panel" style={{ background: "rgba(255,255,255,0.5)" }}>
         <h2 style={{ marginTop: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>
