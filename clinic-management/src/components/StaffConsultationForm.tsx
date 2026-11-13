@@ -147,7 +147,7 @@ export function StaffConsultationForm(props: {
   }
 
   return (
-    <form className="stack" onSubmit={save}>
+    <form className="stack" onSubmit={save} style={{ width: "100%" }}>
       <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>
         Patient consultation (staff)
       </h2>
@@ -161,153 +161,165 @@ export function StaffConsultationForm(props: {
         </p>
       ) : null}
 
-      <h3 style={{ margin: "0.5rem 0 0", fontFamily: "var(--font-display)", fontWeight: 500 }}>
-        Skin goals for the clinician
-      </h3>
-      <div className="field">
-        <label htmlFor="staff-skin-goals">Main skin concerns / goals</label>
-        <textarea
-          id="staff-skin-goals"
-          rows={3}
-          value={skinGoals}
-          onChange={(e) => setSkinGoals(e.target.value)}
-          placeholder="e.g. dullness, pigmentation, fine lines…"
-        />
+      <div className="staff-consult-section">
+        <h3>Skin goals</h3>
+        <div className="field-row">
+          <div className="field">
+            <label htmlFor="staff-skin-goals">Main skin concerns / goals</label>
+            <textarea
+              id="staff-skin-goals"
+              rows={3}
+              value={skinGoals}
+              onChange={(e) => setSkinGoals(e.target.value)}
+              placeholder="e.g. dullness, pigmentation, fine lines…"
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="staff-desired">Desired results</label>
+            <textarea
+              id="staff-desired"
+              rows={3}
+              value={desiredResults}
+              onChange={(e) => setDesiredResults(e.target.value)}
+              placeholder="e.g. brighter, calmer, more even skin…"
+            />
+          </div>
+        </div>
       </div>
-      <div className="field">
-        <label htmlFor="staff-desired">Desired results</label>
-        <textarea
-          id="staff-desired"
-          rows={3}
-          value={desiredResults}
-          onChange={(e) => setDesiredResults(e.target.value)}
-          placeholder="e.g. brighter, calmer, more even skin…"
+
+      <div className="staff-consult-section">
+        <h3>Skincare routine</h3>
+        <p className="muted" style={{ margin: 0 }}>
+          Which of these does the patient currently use?
+        </p>
+        <YnList
+          variant="staff"
+          items={ROUTINE_ITEMS}
+          values={routine}
+          onChange={(id, patch) => patchYn(setRoutine, id, patch)}
         />
       </div>
 
-      <h3 style={{ margin: "0.5rem 0 0", fontFamily: "var(--font-display)", fontWeight: 500 }}>
-        Skincare routine
-      </h3>
-      <p className="muted" style={{ margin: 0 }}>
-        Which of these does the patient currently use?
-      </p>
-      <YnList
-        items={ROUTINE_ITEMS}
-        values={routine}
-        onChange={(id, patch) => patchYn(setRoutine, id, patch)}
-      />
-
-      <h3 style={{ margin: "0.5rem 0 0", fontFamily: "var(--font-display)", fontWeight: 500 }}>
-        Sun, lifestyle & past treatments
-      </h3>
-      <h4 className="ipad-subhead" style={{ margin: 0 }}>
-        Sun & lifestyle
-      </h4>
-      <YnList
-        items={SUN_LIFESTYLE_ITEMS}
-        values={sunLifestyle}
-        onChange={(id, patch) => patchYn(setSunLifestyle, id, patch)}
-      />
-      <h4 className="ipad-subhead" style={{ margin: 0 }}>
-        Aesthetic history
-      </h4>
-      <YnList
-        items={AESTHETIC_HISTORY_ITEMS}
-        values={aestheticHistory}
-        onChange={(id, patch) => patchYn(setAestheticHistory, id, patch)}
-      />
-      <div className="field">
-        <label htmlFor="staff-adverse">Any adverse skin reactions in the past?</label>
-        <textarea
-          id="staff-adverse"
-          rows={2}
-          value={adverseReactions}
-          onChange={(e) => setAdverseReactions(e.target.value)}
-          placeholder="Or type None"
+      <div className="staff-consult-section">
+        <h3>Sun, lifestyle &amp; past treatments</h3>
+        <h4>Sun &amp; lifestyle</h4>
+        <YnList
+          variant="staff"
+          items={SUN_LIFESTYLE_ITEMS}
+          values={sunLifestyle}
+          onChange={(id, patch) => patchYn(setSunLifestyle, id, patch)}
         />
-      </div>
-      <div className="field">
-        <label htmlFor="staff-disappoint">Any treatments where results were disappointing?</label>
-        <textarea
-          id="staff-disappoint"
-          rows={2}
-          value={disappointingResults}
-          onChange={(e) => setDisappointingResults(e.target.value)}
-          placeholder="Optional"
+        <h4>Aesthetic history</h4>
+        <YnList
+          variant="staff"
+          items={AESTHETIC_HISTORY_ITEMS}
+          values={aestheticHistory}
+          onChange={(id, patch) => patchYn(setAestheticHistory, id, patch)}
         />
+        <div className="field-row">
+          <div className="field">
+            <label htmlFor="staff-adverse">Any adverse skin reactions in the past?</label>
+            <textarea
+              id="staff-adverse"
+              rows={2}
+              value={adverseReactions}
+              onChange={(e) => setAdverseReactions(e.target.value)}
+              placeholder="Or type None"
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="staff-disappoint">Any treatments where results were disappointing?</label>
+            <textarea
+              id="staff-disappoint"
+              rows={2}
+              value={disappointingResults}
+              onChange={(e) => setDisappointingResults(e.target.value)}
+              placeholder="Optional"
+            />
+          </div>
+        </div>
       </div>
 
-      <h3 style={{ margin: "0.5rem 0 0", fontFamily: "var(--font-display)", fontWeight: 500 }}>
-        Medical history
-      </h3>
-      <div className="field">
-        <span className="field__label">Currently receiving treatment from a GP or dentist?</span>
-        <YnToggle
-          value={receivingTreatment.answer}
-          onChange={(v) => setReceivingTreatment((r) => ({ ...r, answer: v }))}
+      <div className="staff-consult-section">
+        <h3>Medical history</h3>
+        <div className="yn-list yn-list--staff">
+          <div className="yn-row yn-row--staff">
+            <p className="yn-row__label">Currently receiving treatment from a GP or dentist?</p>
+            <YnToggle
+              value={receivingTreatment.answer}
+              onChange={(v) => setReceivingTreatment((r) => ({ ...r, answer: v }))}
+            />
+            {receivingTreatment.answer === "Y" ? (
+              <input
+                className="yn-comment"
+                placeholder="Optional comments"
+                value={receivingTreatment.comments}
+                onChange={(e) =>
+                  setReceivingTreatment((r) => ({ ...r, comments: e.target.value }))
+                }
+              />
+            ) : (
+              <span className="muted yn-row__spacer" aria-hidden>
+                —
+              </span>
+            )}
+          </div>
+        </div>
+        <div className="field-row">
+          <div className="field">
+            <label htmlFor="staff-meds">Current medications (including supplements)</label>
+            <textarea
+              id="staff-meds"
+              rows={2}
+              value={medications}
+              onChange={(e) => setMedications(e.target.value)}
+              placeholder="Or type None"
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="staff-allergies">Allergies</label>
+            <textarea
+              id="staff-allergies"
+              rows={2}
+              value={allergies}
+              onChange={(e) => setAllergies(e.target.value)}
+              placeholder="Or type None known"
+            />
+          </div>
+        </div>
+        <div className="field-row">
+          <div className="field">
+            <label htmlFor="staff-preg">Pregnancy / breastfeeding / IVF</label>
+            <select
+              id="staff-preg"
+              value={pregnantBreastfeeding}
+              onChange={(e) => setPregnantBreastfeeding(e.target.value)}
+            >
+              <option value="">Select…</option>
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+              <option value="IVF">IVF / fertility treatment</option>
+              <option value="Prefer not to say">Prefer not to say</option>
+            </select>
+          </div>
+          <div className="field">
+            <label htmlFor="staff-past">Past medical &amp; drug history</label>
+            <textarea
+              id="staff-past"
+              rows={2}
+              value={pastHistory}
+              onChange={(e) => setPastHistory(e.target.value)}
+            />
+          </div>
+        </div>
+        <h4>Precautions</h4>
+        <YnList
+          variant="staff"
+          items={MEDICAL_PRECAUTION_ITEMS}
+          values={precautions}
+          onChange={(id, patch) => patchYn(setPrecautions, id, patch)}
         />
-        {receivingTreatment.answer === "Y" ? (
-          <input
-            className="yn-comment"
-            placeholder="Optional comments"
-            value={receivingTreatment.comments}
-            onChange={(e) =>
-              setReceivingTreatment((r) => ({ ...r, comments: e.target.value }))
-            }
-          />
-        ) : null}
       </div>
-      <div className="field">
-        <label htmlFor="staff-meds">Current medications (including supplements)</label>
-        <textarea
-          id="staff-meds"
-          rows={2}
-          value={medications}
-          onChange={(e) => setMedications(e.target.value)}
-          placeholder="Or type None"
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="staff-allergies">Allergies</label>
-        <textarea
-          id="staff-allergies"
-          rows={2}
-          value={allergies}
-          onChange={(e) => setAllergies(e.target.value)}
-          placeholder="Or type None known"
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="staff-preg">Pregnancy / breastfeeding / IVF</label>
-        <select
-          id="staff-preg"
-          value={pregnantBreastfeeding}
-          onChange={(e) => setPregnantBreastfeeding(e.target.value)}
-        >
-          <option value="">Select…</option>
-          <option value="No">No</option>
-          <option value="Yes">Yes</option>
-          <option value="IVF">IVF / fertility treatment</option>
-          <option value="Prefer not to say">Prefer not to say</option>
-        </select>
-      </div>
-      <div className="field">
-        <label htmlFor="staff-past">Past medical & drug history</label>
-        <textarea
-          id="staff-past"
-          rows={2}
-          value={pastHistory}
-          onChange={(e) => setPastHistory(e.target.value)}
-        />
-      </div>
-      <h4 className="ipad-subhead" style={{ margin: 0 }}>
-        Precautions
-      </h4>
-      <YnList
-        items={MEDICAL_PRECAUTION_ITEMS}
-        values={precautions}
-        onChange={(id, patch) => patchYn(setPrecautions, id, patch)}
-      />
 
       {error ? <p className="error">{error}</p> : null}
       {ok ? <p className="ok">{ok}</p> : null}

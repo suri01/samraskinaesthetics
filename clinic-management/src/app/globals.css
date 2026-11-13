@@ -767,6 +767,78 @@ a {
   background: rgba(255, 255, 255, 0.7);
 }
 
+/* Staff customer record — match Customer entered width/density */
+.yn-list--staff {
+  gap: 0;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.yn-row--staff {
+  grid-template-columns: minmax(0, 1.6fr) auto minmax(8rem, 1fr);
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+}
+
+.yn-row--staff:last-child {
+  border-bottom: 0;
+}
+
+.yn-row--staff .yn-row__label {
+  font-size: 0.95rem;
+}
+
+.yn-row--staff .yn-toggle {
+  grid-template-columns: auto auto;
+  width: max-content;
+  gap: 0.4rem;
+}
+
+.yn-row--staff .yn-btn {
+  min-height: 2.15rem;
+  min-width: 3.75rem;
+  padding: 0.25rem 0.85rem;
+  font-size: 0.9rem;
+}
+
+.yn-row--staff .yn-comment {
+  min-height: 2.15rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.65rem;
+}
+
+.yn-row__spacer {
+  font-size: 0.9rem;
+}
+
+.staff-consult-section {
+  display: grid;
+  gap: 0.55rem;
+  width: 100%;
+}
+
+.staff-consult-section h3 {
+  margin: 0;
+  font-family: var(--font-display), serif;
+  font-weight: 500;
+  font-size: 1.05rem;
+}
+
+.staff-consult-section h4 {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-display), serif;
+  font-weight: 500;
+  font-size: 0.98rem;
+}
+
 .chip-grid {
   display: flex;
   flex-wrap: wrap;
@@ -1011,6 +1083,16 @@ a {
 @media (max-width: 860px) {
   .field-row {
     grid-template-columns: 1fr;
+  }
+
+  .yn-row--staff {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .yn-row--staff .yn-toggle {
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
   }
 
   .staff-shell {
