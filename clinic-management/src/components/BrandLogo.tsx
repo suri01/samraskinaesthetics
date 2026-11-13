@@ -27,7 +27,7 @@ export function BrandLogo({
         src={placement === "rail" ? "/brand/samra-logo-320.png" : "/brand/samra-logo.png"}
         alt={BRAND.name}
         width={placement === "rail" ? 640 : 1600}
-        height={placement === "rail" ? 479 : 1198}
+        height={placement === "rail" ? 498 : 1244}
         priority={priority}
         className="brand-mark__img"
         unoptimized
