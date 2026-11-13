@@ -17,8 +17,6 @@ import {
   type ConsultationAnswers,
   type YnAnswer,
 } from "@/lib/consultation-form";
-import { formatGbp } from "@/lib/money";
-import type { UpsellOffer } from "@/lib/upsells";
 
 type Step =
   | "details"
@@ -27,8 +25,7 @@ type Step =
   | "skinType"
   | "photos"
   | "consent"
-  | "aftercare"
-  | "upsell";
+  | "aftercare";
 
 type InitialDetails = {
   firstName: string;
@@ -51,7 +48,6 @@ type InitialMedical = {
 export function IpadCustomerFlow(props: {
   isNewCustomer: boolean;
   serviceName: string;
-  upsells: UpsellOffer[];
   initialDetails: InitialDetails;
   initialMedical: InitialMedical;
 }) {
@@ -66,10 +62,9 @@ export function IpadCustomerFlow(props: {
         "photos",
         "consent",
         "aftercare",
-        "upsell",
       ];
     }
-    return ["details", "consent", "aftercare", "upsell"];
+    return ["details", "consent", "aftercare"];
   }, [props.isNewCustomer]);
 
   const [stepIndex, setStepIndex] = useState(0);
@@ -90,7 +85,6 @@ export function IpadCustomerFlow(props: {
   const [signedName, setSignedName] = useState(
     `${props.initialDetails.firstName} ${props.initialDetails.lastName}`.trim(),
   );
-  const [selectedUpsells, setSelectedUpsells] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -181,7 +175,6 @@ export function IpadCustomerFlow(props: {
         consentTitle,
         consentBody,
         aftercareAcknowledged: form.aftercareAcknowledged,
-        upsellSkus: selectedUpsells,
       }),
     });
     const data = await res.json().catch(() => ({}));
@@ -198,12 +191,6 @@ export function IpadCustomerFlow(props: {
     await fetch("/api/ipad/abandon", { method: "POST", credentials: "same-origin" });
     router.push("/ipad");
     router.refresh();
-  }
-
-  function toggleUpsell(sku: string) {
-    setSelectedUpsells((prev) =>
-      prev.includes(sku) ? prev.filter((s) => s !== sku) : [...prev, sku],
-    );
   }
 
   function acceptAllConsent() {
@@ -546,38 +533,6 @@ export function IpadCustomerFlow(props: {
         </section>
       ) : null}
 
-      {step === "upsell" ? (
-        <section className="stack">
-          <h2 className="ipad-step-title">Enhance today’s visit?</h2>
-          <p className="muted" style={{ margin: 0 }}>
-            Optional add-ons for <strong>{props.serviceName}</strong>. Nothing is charged here —
-            reception will confirm suitability with you.
-          </p>
-          <div className="stack">
-            {props.upsells.map((offer) => {
-              const selected = selectedUpsells.includes(offer.sku);
-              return (
-                <button
-                  key={offer.sku}
-                  type="button"
-                  className={`ipad-upsell${selected ? " is-selected" : ""}`}
-                  onClick={() => toggleUpsell(offer.sku)}
-                >
-                  <span className="ipad-upsell__title">{offer.title}</span>
-                  <span className="ipad-upsell__blurb">{offer.blurb}</span>
-                  <span className="ipad-upsell__price">
-                    {offer.pricePence > 0 ? formatGbp(offer.pricePence) : "Confirm with clinician"}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-          <p className="muted" style={{ margin: 0, fontSize: "0.85rem" }}>
-            Skip if you prefer to stay with your original treatment only.
-          </p>
-        </section>
-      ) : null}
-
       {error ? <p className="error">{error}</p> : null}
 
       <div className="row">
@@ -614,8 +569,6 @@ function labelForStep(step: Step): string {
       return "Consent";
     case "aftercare":
       return "Aftercare";
-    case "upsell":
-      return "Add-ons";
     default:
       return step;
   }

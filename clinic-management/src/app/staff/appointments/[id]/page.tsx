@@ -47,8 +47,8 @@ export default async function AppointmentDetailPage({ params }: { params: Promis
             access on trusted hardware only). When you hand the iPad over, generate a passcode here —
             the customer enters it to open <strong>only their profile</strong>
             {!c.intakeCompletedAt
-              ? " (new-customer iPad: details, skin profile, photos, consent, aftercare, add-ons)."
-              : " (returning iPad: confirm details, consent, aftercare, add-ons)."}{" "}
+              ? " (new-customer iPad: details, skin profile, photos, consent, aftercare)."
+              : " (returning iPad: confirm details, consent, aftercare)."}{" "}
             Skin goals, lifestyle/treatment history, and medical history are completed by staff on
             the customer record.
           </p>

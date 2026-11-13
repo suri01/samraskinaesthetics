@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { IpadCustomerFlow } from "@/components/IpadCustomerFlow";
 import { getIpadContext } from "@/lib/auth/ipad";
-import { upsellsForService } from "@/lib/upsells";
 
 export default async function IpadFormsPage() {
   const ctx = await getIpadContext();
@@ -31,7 +30,6 @@ export default async function IpadFormsPage() {
         <IpadCustomerFlow
           isNewCustomer={ctx.isNewCustomer}
           serviceName={ctx.serviceName}
-          upsells={upsellsForService(ctx.serviceName)}
           initialDetails={{
             firstName: ctx.firstName,
             lastName: ctx.lastName,

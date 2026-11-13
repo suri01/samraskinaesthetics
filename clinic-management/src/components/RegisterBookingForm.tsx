@@ -48,7 +48,7 @@ export function RegisterBookingForm() {
     }
     setMsg(
       data.isNewCustomer
-        ? "New customer registered at booking — iPad runs customer intake; staff complete medical/consultation on the customer record."
+        ? "New customer registered at booking — iPad runs customer intake (no upsell); staff complete medical/consultation on the customer record."
         : "Booking created.",
     );
     setFirstName("");
