@@ -1,8 +1,5 @@
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
 import { IpadCustomerFlow } from "@/components/IpadCustomerFlow";
-import { db } from "@/db";
-import { clinicSettings } from "@/db/schema";
 import { getIpadContext } from "@/lib/auth/ipad";
 import { upsellsForService } from "@/lib/upsells";
 
@@ -10,38 +7,30 @@ export default async function IpadFormsPage() {
   const ctx = await getIpadContext();
   if (!ctx) redirect("/ipad");
 
-  const [settings] = await db
-    .select()
-    .from(clinicSettings)
-    .where(eq(clinicSettings.clinicId, ctx.clinicId))
-    .limit(1);
-
   const mh = ctx.medicalHistory ?? {};
   const address = ctx.addressJson ?? {};
 
   return (
     <main className="ipad-shell">
-      <div className="ipad-card stack" style={{ width: "min(680px, 100%)", overflow: "hidden", padding: 0 }}>
+      <div className="ipad-card stack" style={{ width: "min(720px, 100%)", overflow: "hidden", padding: 0 }}>
         <div className="ipad-card__brand-rail" aria-hidden>
           <span>Samra</span>
           <span>Check-in</span>
         </div>
         <div className="stack" style={{ padding: "1.5rem 1.75rem 1.75rem" }}>
-        <p className="badge badge--gold">Customer check-in</p>
+        <p className="badge badge--gold">Consultation check-in</p>
         <h1>{ctx.isNewCustomer ? `Welcome, ${ctx.firstName || "there"}` : `Welcome back, ${ctx.firstName}`}</h1>
         <p className="muted">
           Booked for <strong>{ctx.serviceName}</strong> ·{" "}
           {ctx.startsAt.toLocaleString("en-GB", { timeZone: "Europe/London" })}.
           {ctx.isNewCustomer
-            ? " You’re a new customer — we’ll capture your full details, medical history, consent, and optional add-ons."
-            : " Quick confirm of your details, today’s consent, and optional add-ons."}{" "}
-          This session only covers your record for this visit.
+            ? " We’ll walk through consultation details, medical history, consent, and aftercare — one short screen at a time."
+            : " Quick update of your details, medical precautions, consent, and aftercare."}{" "}
+          Take your time; you can go back if you need to.
         </p>
         <IpadCustomerFlow
           isNewCustomer={ctx.isNewCustomer}
           serviceName={ctx.serviceName}
-          consentTitle="Treatment consent"
-          consentBody={settings?.consentTemplate ?? ""}
           upsells={upsellsForService(ctx.serviceName)}
           initialDetails={{
             firstName: ctx.firstName,

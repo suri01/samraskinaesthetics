@@ -664,30 +664,194 @@ a {
   font-weight: 500;
 }
 
-.ipad-steps {
-  display: flex;
-  flex-wrap: wrap;
+.ipad-progress {
+  display: grid;
   gap: 0.45rem;
 }
 
-.ipad-steps__dot {
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
+.ipad-progress__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 0.35rem 0.65rem;
-  border-radius: 999px;
-  border: 1px solid var(--line);
   color: rgba(26, 33, 28, 0.55);
 }
 
-.ipad-steps__dot.is-active {
-  background: rgba(111, 133, 118, 0.18);
-  color: var(--moss);
-  border-color: transparent;
+.ipad-progress__track {
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgba(26, 33, 28, 0.08);
+  overflow: hidden;
 }
 
-.ipad-steps__dot.is-done {
+.ipad-progress__fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--sage), var(--moss));
+  transition: width 220ms ease;
+}
+
+.ipad-subhead {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-display), serif;
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.field__label {
+  display: block;
+  font-size: 0.88rem;
+  color: rgba(26, 33, 28, 0.78);
+  margin-bottom: 0.35rem;
+}
+
+.yn-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.yn-row {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.yn-row__label {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.35;
+}
+
+.yn-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+}
+
+.yn-btn {
+  min-height: 3rem;
+  border-radius: 999px;
+  border: 1px solid rgba(43, 58, 49, 0.22);
+  background: rgba(255, 252, 248, 0.7);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
   color: var(--moss);
+  cursor: pointer;
+}
+
+.yn-btn.is-yes {
+  background: var(--moss);
+  border-color: transparent;
+  color: #f7f5f1;
+}
+
+.yn-btn.is-no {
+  background: rgba(111, 133, 118, 0.14);
+  border-color: transparent;
+  color: var(--ink);
+}
+
+.yn-comment {
+  width: 100%;
+  min-height: 2.65rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--line);
+  padding: 0.65rem 0.85rem;
+  font: inherit;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.chip {
+  min-height: 2.75rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(43, 58, 49, 0.22);
+  background: rgba(255, 252, 248, 0.7);
+  font: inherit;
+  cursor: pointer;
+}
+
+.chip.is-selected {
+  background: var(--moss);
+  border-color: transparent;
+  color: #f7f5f1;
+}
+
+.fitz-grid {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.fitz-card {
+  display: grid;
+  gap: 0.2rem;
+  text-align: left;
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  font: inherit;
+  cursor: pointer;
+}
+
+.fitz-card span {
+  color: rgba(26, 33, 28, 0.68);
+  font-size: 0.9rem;
+}
+
+.fitz-card.is-selected {
+  border-color: var(--gold);
+  background: rgba(176, 141, 87, 0.12);
+}
+
+.consent-list {
+  display: grid;
+  gap: 0.65rem;
+  max-height: 22rem;
+  overflow: auto;
+  padding-right: 0.25rem;
+}
+
+.consent--block {
+  align-items: flex-start;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.aftercare-card {
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.aftercare-card h3 {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-display), serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.aftercare-card ul {
+  margin: 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.35rem;
+  color: rgba(26, 33, 28, 0.78);
 }
 
 .ipad-upsell {

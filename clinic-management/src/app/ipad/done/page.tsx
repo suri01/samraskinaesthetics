@@ -6,7 +6,8 @@ export default function IpadDonePage() {
     <GateShell eyebrow="Visit complete" logoHref={null}>
       <h1>Thank you</h1>
       <p className="gate__lede">
-        Your details are saved. Please return the iPad to reception — this session has ended.
+        Your consultation answers, consent, and aftercare acknowledgement are saved. Please return
+        the iPad to reception — this session has ended.
       </p>
       <div className="gate__actions">
         <Link className="btn btn--ghost" href="/ipad">

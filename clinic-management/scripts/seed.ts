@@ -119,7 +119,7 @@ async function main() {
     retentionYearsClinical: 8,
     retentionYearsFinance: 7,
     consentTemplate:
-      "I confirm I have discussed the proposed treatment, risks, benefits, and aftercare with the practitioner. I consent to treatment today. This is sample wording for demonstration only.",
+      "Patient consent is captured on the iPad consultation journey (medical discussion, expectations, risks, aftercare, and signature). Reference: docs/forms/consultation-consent-aftercare.pdf.",
   });
 
   const [custA, custB, custC] = await db
@@ -223,15 +223,19 @@ async function main() {
     .insert(formTemplates)
     .values({
       clinicId: clinic.id,
-      key: "intake_v1",
-      title: "New customer intake",
+      key: "consultation_consent_aftercare_v1",
+      title: "Consultation, consent & aftercare",
       version: 1,
       schemaJson: {
         fields: [
-          { id: "gp", label: "GP / clinic name", type: "text" },
-          { id: "medications", label: "Current medications", type: "textarea" },
-          { id: "pregnant", label: "Pregnant or breastfeeding?", type: "select", options: ["No", "Yes", "Prefer not to say"] },
-          { id: "goals", label: "What would you like help with?", type: "textarea" },
+          { id: "concerns", label: "Skin concerns & goals", type: "group" },
+          { id: "skinHealth", label: "Skin health history", type: "yn_list" },
+          { id: "routine", label: "Skincare routine", type: "yn_list" },
+          { id: "skinType", label: "Skin type / Fitzpatrick", type: "group" },
+          { id: "history", label: "Sun, lifestyle & aesthetic history", type: "group" },
+          { id: "medical", label: "Medical history & precautions", type: "group" },
+          { id: "consent", label: "Patient consent statements", type: "checklist" },
+          { id: "aftercare", label: "Aftercare acknowledgement", type: "checkbox" },
         ],
       },
     })

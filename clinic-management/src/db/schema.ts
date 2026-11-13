@@ -133,6 +133,8 @@ export const authRateLimits = pgTable(
 
 export type MedicalHistory = {
   gpName?: string;
+  gpAddress?: string;
+  contactGp?: string;
   medications?: string;
   allergies?: string;
   conditions?: string;
@@ -142,6 +144,11 @@ export type MedicalHistory = {
   skinGoals?: string;
   emergencyName?: string;
   emergencyPhone?: string;
+  receivingTreatment?: unknown;
+  precautions?: unknown;
+  /** Full consultation journey payload from iPad */
+  consultation?: unknown;
+  aftercareAcknowledged?: boolean;
 };
 
 export const customers = pgTable(

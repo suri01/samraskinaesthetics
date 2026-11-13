@@ -13,6 +13,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const details = body.details ?? {};
     const medical = body.medical ?? {};
+    const consultation = body.consultation ?? null;
     const signedName = String(body.signedName ?? "").trim();
     if (!signedName) {
       return NextResponse.json({ error: "Signature required" }, { status: 400 });
@@ -49,6 +50,8 @@ export async function POST(req: Request) {
         medicalNotes: medical.skinGoals ? String(medical.skinGoals) : null,
         medicalHistoryJson: {
           gpName: String(medical.gpName ?? ""),
+          gpAddress: String(medical.gpAddress ?? details.gpAddress ?? ""),
+          contactGp: String(medical.contactGp ?? details.contactGp ?? ""),
           medications: String(medical.medications ?? ""),
           allergies: String(medical.allergies ?? ""),
           conditions: String(medical.conditions ?? ""),
@@ -58,6 +61,10 @@ export async function POST(req: Request) {
           skinGoals: String(medical.skinGoals ?? ""),
           emergencyName: String(medical.emergencyName ?? ""),
           emergencyPhone: String(medical.emergencyPhone ?? ""),
+          receivingTreatment: medical.receivingTreatment ?? null,
+          precautions: medical.precautions ?? null,
+          consultation,
+          aftercareAcknowledged: Boolean(body.aftercareAcknowledged),
         },
         whatsappOptIn: Boolean(details.whatsappOptIn),
         emailOptIn: Boolean(details.emailOptIn),
@@ -85,9 +92,12 @@ export async function POST(req: Request) {
         appointmentId: ctx.appointmentId,
         customerId: ctx.customerId,
         answersJson: {
-          flow: ctx.isNewCustomer ? "new_customer_intake" : "returning_checkin",
+          flow: ctx.isNewCustomer ? "consultation_new" : "consultation_returning",
+          template: "consultation_consent_aftercare_v1",
           details,
           medical,
+          consultation,
+          aftercareAcknowledged: Boolean(body.aftercareAcknowledged),
           upsellSkus,
         },
         signedName,
@@ -109,13 +119,16 @@ export async function POST(req: Request) {
       clinicId: ctx.clinicId,
       actorType: "ipad",
       actorId: ctx.sessionId,
-      action: ctx.isNewCustomer ? "ipad.new_customer_intake_completed" : "ipad.returning_checkin_completed",
+      action: ctx.isNewCustomer
+        ? "ipad.consultation_intake_completed"
+        : "ipad.consultation_returning_completed",
       entityType: "customer",
       entityId: ctx.customerId,
       meta: {
         appointmentId: ctx.appointmentId,
         upsellCount: chosen.length,
         upsellSkus: chosen.map((o) => o.sku),
+        aftercareAcknowledged: Boolean(body.aftercareAcknowledged),
       },
     });
 

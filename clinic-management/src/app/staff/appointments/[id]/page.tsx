@@ -47,8 +47,8 @@ export default async function AppointmentDetailPage({ params }: { params: Promis
             access on trusted hardware only). When you hand the iPad over, generate a passcode here —
             the customer enters it to open <strong>only their profile</strong>
             {!c.intakeCompletedAt
-              ? " (new-customer intake: details, medical history, photos, consent, upsell)."
-              : " (returning check-in: confirm details, consent, optional upsell)."}
+              ? " (new-customer consultation: details, skin history, medical, photos, consent, aftercare, add-ons)."
+              : " (returning check-in: confirm details, medical update, consent, aftercare, add-ons)."}
           </p>
           <IssueIpadCodeButton appointmentId={a.id} />
         </div>
