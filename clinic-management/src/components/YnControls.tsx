@@ -52,10 +52,6 @@ export function YnList(props: {
                 value={row.comments}
                 onChange={(e) => props.onChange(item.id, { comments: e.target.value })}
               />
-            ) : staff ? (
-              <span className="muted yn-row__spacer" aria-hidden>
-                —
-              </span>
             ) : null}
           </div>
         );

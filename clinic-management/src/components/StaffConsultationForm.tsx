@@ -258,11 +258,7 @@ export function StaffConsultationForm(props: {
                   setReceivingTreatment((r) => ({ ...r, comments: e.target.value }))
                 }
               />
-            ) : (
-              <span className="muted yn-row__spacer" aria-hidden>
-                —
-              </span>
-            )}
+            ) : null}
           </div>
         </div>
         <div className="field-row">

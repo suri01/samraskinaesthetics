@@ -815,10 +815,6 @@ a {
   border-radius: 0.65rem;
 }
 
-.yn-row__spacer {
-  font-size: 0.9rem;
-}
-
 .staff-consult-section {
   display: grid;
   gap: 0.55rem;
