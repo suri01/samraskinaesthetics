@@ -73,7 +73,7 @@ a {
 .brand-mark {
   display: block;
   line-height: 0;
-  background: var(--champagne);
+  background: transparent;
 }
 
 .brand-mark__img {
@@ -83,17 +83,20 @@ a {
 }
 
 .brand-mark--gate {
-  width: min(17.5rem, 68vw);
+  width: min(15.5rem, 62vw);
   margin-inline: auto;
+  filter: drop-shadow(0 10px 22px rgba(26, 33, 28, 0.12));
 }
 
 .brand-mark--rail {
   width: 100%;
-  max-width: 11.5rem;
+  max-width: 10.5rem;
+  filter: drop-shadow(0 6px 14px rgba(26, 33, 28, 0.1));
 }
 
 .brand-mark--masthead {
-  width: min(14rem, 55vw);
+  width: min(13rem, 52vw);
+  filter: drop-shadow(0 8px 18px rgba(26, 33, 28, 0.1));
 }
 
 /* —— Gate compositions (home / login / iPad entry) —— */
