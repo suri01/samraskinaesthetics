@@ -1,7 +1,7 @@
 import { and, eq, isNull } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { db } from "@/db";
-import { appointments, customers, ipadSessions } from "@/db/schema";
+import { appointments, customers, type MedicalHistory, ipadSessions } from "@/db/schema";
 import { writeAudit } from "@/lib/audit";
 import { IPAD_COOKIE, IPAD_SESSION_MS } from "@/lib/constants";
 import { randomNumericCode, randomToken, sha256 } from "@/lib/crypto";
@@ -13,6 +13,19 @@ export type IpadContext = {
   appointmentId: string;
   customerId: string;
   customerName: string;
+  firstName: string;
+  lastName: string;
+  email: string | null;
+  phone: string | null;
+  dateOfBirth: string | null;
+  addressJson: Record<string, string> | null;
+  allergies: string | null;
+  medicalNotes: string | null;
+  medicalHistory: MedicalHistory | null;
+  whatsappOptIn: boolean;
+  emailOptIn: boolean;
+  /** True when intake has never been completed (typical after booking registration). */
+  isNewCustomer: boolean;
   serviceName: string;
   startsAt: Date;
 };
@@ -60,7 +73,6 @@ export async function startIpadSession(code: string): Promise<{ ok: true } | { e
     return { error: "Invalid or expired code." };
   }
 
-  // Invalidate any prior iPad sessions for this appointment
   await db
     .update(ipadSessions)
     .set({ revokedAt: new Date() })
@@ -94,8 +106,9 @@ export async function startIpadSession(code: string): Promise<{ ok: true } | { e
     clinicId: appt.clinicId,
     actorType: "ipad",
     action: "ipad.session_started",
-    entityType: "appointment",
-    entityId: appt.id,
+    entityType: "customer",
+    entityId: appt.customerId,
+    meta: { appointmentId: appt.id },
   });
 
   return { ok: true };
@@ -130,6 +143,18 @@ export async function getIpadContext(): Promise<IpadContext | null> {
     appointmentId: appointment.id,
     customerId: customer.id,
     customerName: `${customer.firstName} ${customer.lastName}`,
+    firstName: customer.firstName,
+    lastName: customer.lastName,
+    email: customer.email,
+    phone: customer.phone,
+    dateOfBirth: customer.dateOfBirth,
+    addressJson: customer.addressJson ?? null,
+    allergies: customer.allergies,
+    medicalNotes: customer.medicalNotes,
+    medicalHistory: customer.medicalHistoryJson ?? null,
+    whatsappOptIn: customer.whatsappOptIn,
+    emailOptIn: customer.emailOptIn,
+    isNewCustomer: !customer.intakeCompletedAt,
     serviceName: appointment.serviceName,
     startsAt: appointment.startsAt,
   };

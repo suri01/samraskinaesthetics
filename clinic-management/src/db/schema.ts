@@ -131,6 +131,19 @@ export const authRateLimits = pgTable(
   (t) => [uniqueIndex("auth_rate_limits_key_action_uidx").on(t.key, t.action)],
 );
 
+export type MedicalHistory = {
+  gpName?: string;
+  medications?: string;
+  allergies?: string;
+  conditions?: string;
+  previousTreatments?: string;
+  pregnantBreastfeeding?: string;
+  smoking?: string;
+  skinGoals?: string;
+  emergencyName?: string;
+  emergencyPhone?: string;
+};
+
 export const customers = pgTable(
   "customers",
   {
@@ -146,9 +159,17 @@ export const customers = pgTable(
     addressJson: jsonb("address_json").$type<Record<string, string>>(),
     medicalNotes: text("medical_notes"),
     allergies: text("allergies"),
+    medicalHistoryJson: jsonb("medical_history_json").$type<MedicalHistory>(),
+    /** null = new / incomplete intake (typical after booking registration). */
+    intakeCompletedAt: timestamp("intake_completed_at", { withTimezone: true }),
+    registeredVia: text("registered_via").notNull().default("booking"),
     whatsappOptIn: boolean("whatsapp_opt_in").notNull().default(false),
     emailOptIn: boolean("email_opt_in").notNull().default(false),
     marketingOptIn: boolean("marketing_opt_in").notNull().default(false),
+    /** Soft interest from iPad upsell — staff follow up; not a payment. */
+    upsellInterestJson: jsonb("upsell_interest_json").$type<
+      Array<{ sku: string; title: string; bookedService: string; notedAt: string }>
+    >(),
     retentionHold: boolean("retention_hold").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

@@ -31,7 +31,8 @@ export default async function CustomersPage() {
             {rows.map((c) => (
               <tr key={c.id}>
                 <td>
-                  {c.firstName} {c.lastName}
+                  {c.firstName} {c.lastName}{" "}
+                  {!c.intakeCompletedAt ? <span className="badge badge--gold">new</span> : null}
                 </td>
                 <td>
                   <div>{c.email}</div>

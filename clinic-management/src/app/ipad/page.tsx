@@ -12,8 +12,8 @@ export default async function IpadEntryPage() {
         <p className="badge badge--gold">Customer iPad</p>
         <h1>Welcome</h1>
         <p className="muted">
-          Enter the code from reception. This session only covers your appointment — never staff
-          tools or other customers.
+          Enter the code from reception. We’ll open your customer check-in for today’s visit — never
+          staff tools or other people’s records.
         </p>
         <IpadUnlockForm />
       </div>

@@ -30,14 +30,23 @@ export default async function AppointmentDetailPage({ params }: { params: Promis
       <p className="page-lede">
         {c.firstName} {c.lastName} ·{" "}
         {a.startsAt.toLocaleString("en-GB", { timeZone: "Europe/London" })} ·{" "}
-        <span className="badge">{a.status.replaceAll("_", " ")}</span>
+        <span className="badge">{a.status.replaceAll("_", " ")}</span>{" "}
+        {!c.intakeCompletedAt ? (
+          <span className="badge badge--gold">new customer · full iPad intake</span>
+        ) : (
+          <span className="badge">returning · quick check-in</span>
+        )}
       </p>
       <div className="stack">
         <div className="panel stack">
           <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>Customer iPad</h2>
           <p className="muted" style={{ margin: 0 }}>
-            Issues a short-lived code for the kiosk. iPad sessions are appointment-scoped and never share
-            the staff cookie.
+            Unlock opens a short-lived visit session tied to this booking, then runs the{" "}
+            <strong>customer</strong> flow
+            {!c.intakeCompletedAt
+              ? " (full details, medical history, photos, consent, treatment upsell)."
+              : " (confirm details, consent, optional upsell)."}{" "}
+            Never shares the staff cookie.
           </p>
           <IssueIpadCodeButton appointmentId={a.id} />
         </div>

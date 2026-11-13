@@ -62,7 +62,12 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
         {customer.firstName} {customer.lastName}
       </h1>
       <p className="page-lede">
-        {customer.email} · {customer.phone} · DOB {customer.dateOfBirth ?? "—"}
+        {customer.email} · {customer.phone} · DOB {customer.dateOfBirth ?? "—"} ·{" "}
+        {customer.intakeCompletedAt ? (
+          <span className="badge">Intake complete</span>
+        ) : (
+          <span className="badge badge--gold">New · full iPad intake pending</span>
+        )}
       </p>
       <div className="stack">
         <div className="panel stack">
@@ -71,11 +76,25 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
             <strong>Allergies:</strong> {customer.allergies ?? "—"}
           </p>
           <p style={{ margin: 0 }}>
-            <strong>Notes:</strong> {customer.medicalNotes ?? "—"}
+            <strong>Notes / goals:</strong> {customer.medicalNotes ?? "—"}
           </p>
+          {customer.medicalHistoryJson ? (
+            <p className="muted" style={{ margin: 0 }}>
+              History on file: GP {customer.medicalHistoryJson.gpName || "—"} · Meds{" "}
+              {customer.medicalHistoryJson.medications || "—"} · Conditions{" "}
+              {customer.medicalHistoryJson.conditions || "—"}
+            </p>
+          ) : null}
+          {customer.upsellInterestJson && customer.upsellInterestJson.length > 0 ? (
+            <p style={{ margin: 0 }}>
+              <strong>iPad upsell interest:</strong>{" "}
+              {customer.upsellInterestJson.map((u) => u.title).join("; ")}
+            </p>
+          ) : null}
           <p className="muted" style={{ margin: 0 }}>
-            Comms: WhatsApp {customer.whatsappOptIn ? "yes" : "no"} · Email {customer.emailOptIn ? "yes" : "no"} ·
-            Marketing {customer.marketingOptIn ? "yes" : "no"} (no marketing without opt-in)
+            Registered via {customer.registeredVia} · Comms: WhatsApp{" "}
+            {customer.whatsappOptIn ? "yes" : "no"} · Email {customer.emailOptIn ? "yes" : "no"} · Marketing{" "}
+            {customer.marketingOptIn ? "yes" : "no"} (no marketing without opt-in)
           </p>
         </div>
 

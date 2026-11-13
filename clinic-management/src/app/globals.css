@@ -371,6 +371,85 @@ a {
   text-transform: capitalize;
 }
 
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+.ipad-step-title {
+  margin: 0;
+  font-family: var(--font-display), serif;
+  font-size: 1.55rem;
+  font-weight: 500;
+}
+
+.ipad-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.ipad-steps__dot {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: rgba(22, 32, 25, 0.55);
+}
+
+.ipad-steps__dot.is-active {
+  background: rgba(111, 133, 118, 0.18);
+  color: var(--moss);
+  border-color: transparent;
+}
+
+.ipad-steps__dot.is-done {
+  color: var(--moss);
+}
+
+.ipad-upsell {
+  display: grid;
+  gap: 0.35rem;
+  text-align: left;
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.ipad-upsell.is-selected {
+  border-color: var(--gold);
+  background: rgba(176, 141, 87, 0.12);
+}
+
+.ipad-upsell__title {
+  font-family: var(--font-display), serif;
+  font-size: 1.15rem;
+}
+
+.ipad-upsell__blurb {
+  color: rgba(22, 32, 25, 0.72);
+  font-size: 0.92rem;
+}
+
+.ipad-upsell__price {
+  font-size: 0.85rem;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 860px) {
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 860px) {
   .staff-shell {
     grid-template-columns: 1fr;
