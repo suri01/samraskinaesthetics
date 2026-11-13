@@ -9,28 +9,38 @@ type BrandLogoProps = {
   placement?: "rail" | "gate" | "masthead";
   priority?: boolean;
   className?: string;
+  /** Show crisp HTML tagline under the mark (avoids pixelated raster caps). */
+  showTagline?: boolean;
 };
 
 /**
- * Transparent gold brand mark — sits on champagne/sage atmosphere, no plate fill.
+ * Transparent gold mark (face + Samra script). Fine “SKIN & AESTHETICS”
+ * caps are HTML type so they stay sharp at any size.
  */
 export function BrandLogo({
   href = "/",
   placement = "gate",
   priority = false,
   className = "",
+  showTagline = true,
 }: BrandLogoProps) {
   const image = (
     <span className={`brand-mark brand-mark--${placement} ${className}`.trim()}>
       <Image
         src={placement === "rail" ? "/brand/samra-logo-320.png" : "/brand/samra-logo.png"}
-        alt={BRAND.name}
-        width={placement === "rail" ? 320 : 800}
-        height={placement === "rail" ? 235 : 589}
+        alt=""
+        width={placement === "rail" ? 640 : 1600}
+        height={placement === "rail" ? 439 : 1097}
         priority={priority}
         className="brand-mark__img"
         unoptimized
       />
+      {showTagline ? (
+        <span className="brand-mark__tagline" aria-hidden="true">
+          Skin &amp; Aesthetics
+        </span>
+      ) : null}
+      <span className="sr-only">{BRAND.name}</span>
     </span>
   );
 
