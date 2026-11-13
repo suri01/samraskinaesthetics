@@ -23,8 +23,8 @@ export default async function IpadFormsPage() {
           Booked for <strong>{ctx.serviceName}</strong> ·{" "}
           {ctx.startsAt.toLocaleString("en-GB", { timeZone: "Europe/London" })}.
           {ctx.isNewCustomer
-            ? " We’ll walk through your details, skin profile, photos, consent, and aftercare — one short screen at a time. Your clinician completes medical history in clinic."
-            : " Confirm your details, then consent and aftercare. Your clinician updates medical notes in clinic."}{" "}
+            ? " We’ll walk through your details, skin health, skin type, photos, consent, and aftercare — one short screen at a time. Your clinician completes routine and medical history in clinic."
+            : " Confirm your details, then consent and aftercare. Your clinician updates consultation notes in clinic."}{" "}
           Take your time; you can go back if you need to.
         </p>
         <IpadCustomerFlow

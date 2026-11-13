@@ -5,6 +5,7 @@ import { YnList, YnToggle } from "@/components/YnControls";
 import {
   AESTHETIC_HISTORY_ITEMS,
   MEDICAL_PRECAUTION_ITEMS,
+  ROUTINE_ITEMS,
   SUN_LIFESTYLE_ITEMS,
   createEmptyConsultation,
   type YnAnswer,
@@ -66,6 +67,7 @@ export function StaffConsultationForm(props: {
   const mh = props.initial ?? {};
   const [skinGoals, setSkinGoals] = useState(mh.skinGoals ?? "");
   const [desiredResults, setDesiredResults] = useState(mh.desiredResults ?? "");
+  const [routine, setRoutine] = useState(() => ynFromStored(mh.routine, ROUTINE_ITEMS));
   const [sunLifestyle, setSunLifestyle] = useState(() =>
     ynFromStored(mh.sunLifestyle, SUN_LIFESTYLE_ITEMS),
   );
@@ -120,6 +122,7 @@ export function StaffConsultationForm(props: {
         body: JSON.stringify({
           skinGoals,
           desiredResults,
+          routine,
           sunLifestyle,
           aestheticHistory,
           aestheticNotes: { adverseReactions, disappointingResults },
@@ -148,8 +151,8 @@ export function StaffConsultationForm(props: {
         Patient consultation
       </h2>
       <p className="muted" style={{ margin: 0 }}>
-        Clinician-facing notes for this patient — skin goals, lifestyle/treatment history, and
-        medical history. Captured here rather than on the customer iPad.
+        Clinician-facing notes for this patient — skin goals, routine, lifestyle/treatment history,
+        and medical history. Captured here rather than on the customer iPad.
       </p>
       {mh.staffConsultationAt ? (
         <p className="muted" style={{ margin: 0 }}>
@@ -184,6 +187,18 @@ export function StaffConsultationForm(props: {
           placeholder="e.g. brighter, calmer, more even skin…"
         />
       </div>
+
+      <h3 style={{ margin: "0.5rem 0 0", fontFamily: "var(--font-display)", fontWeight: 500 }}>
+        Skincare routine
+      </h3>
+      <p className="muted" style={{ margin: 0 }}>
+        Which of these does the patient currently use?
+      </p>
+      <YnList
+        items={ROUTINE_ITEMS}
+        values={routine}
+        onChange={(id, patch) => patchYn(setRoutine, id, patch)}
+      />
 
       <h3 style={{ margin: "0.5rem 0 0", fontFamily: "var(--font-display)", fontWeight: 500 }}>
         Sun, lifestyle & past treatments

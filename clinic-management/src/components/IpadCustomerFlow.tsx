@@ -8,7 +8,6 @@ import {
   AFTERCARE_SECTIONS,
   CONSENT_STATEMENTS,
   FITZPATRICK_OPTIONS,
-  ROUTINE_ITEMS,
   SKIN_HEALTH_ITEMS,
   SKIN_TYPE_OPTIONS,
   SKIN_TYPE_VISUALS,
@@ -21,7 +20,6 @@ import {
 type Step =
   | "details"
   | "skinHealth"
-  | "routine"
   | "skinType"
   | "photos"
   | "consent"
@@ -57,7 +55,6 @@ export function IpadCustomerFlow(props: {
       return [
         "details",
         "skinHealth",
-        "routine",
         "skinType",
         "photos",
         "consent",
@@ -95,7 +92,7 @@ export function IpadCustomerFlow(props: {
     setForm((f) => ({ ...f, details: { ...f.details, [key]: value } }));
   }
 
-  function setYn(group: "skinHealth" | "routine", id: string, patch: Partial<YnAnswer>) {
+  function setYn(group: "skinHealth", id: string, patch: Partial<YnAnswer>) {
     setForm((f) => ({
       ...f,
       [group]: {
@@ -365,20 +362,6 @@ export function IpadCustomerFlow(props: {
         </section>
       ) : null}
 
-      {step === "routine" ? (
-        <section className="stack">
-          <h2 className="ipad-step-title">Your skincare routine</h2>
-          <p className="muted" style={{ margin: 0 }}>
-            Which of these do you currently use?
-          </p>
-          <YnList
-            items={ROUTINE_ITEMS}
-            values={form.routine}
-            onChange={(id, patch) => setYn("routine", id, patch)}
-          />
-        </section>
-      ) : null}
-
       {step === "skinType" ? (
         <section className="stack">
           <h2 className="ipad-step-title">Skin type</h2>
@@ -559,8 +542,6 @@ function labelForStep(step: Step): string {
       return "About you";
     case "skinHealth":
       return "Skin health";
-    case "routine":
-      return "Routine";
     case "skinType":
       return "Skin type";
     case "photos":

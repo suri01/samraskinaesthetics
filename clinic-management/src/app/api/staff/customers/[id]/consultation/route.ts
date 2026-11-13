@@ -40,6 +40,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
       conditions: pastHistory || existing.conditions,
       receivingTreatment: body.receivingTreatment ?? existing.receivingTreatment ?? null,
       precautions: body.precautions ?? existing.precautions ?? null,
+      routine: body.routine ?? existing.routine ?? {},
       sunLifestyle: body.sunLifestyle ?? existing.sunLifestyle ?? {},
       aestheticHistory: body.aestheticHistory ?? existing.aestheticHistory ?? {},
       aestheticNotes: {

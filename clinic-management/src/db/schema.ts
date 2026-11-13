@@ -145,6 +145,8 @@ export type MedicalHistory = {
   receivingTreatment?: unknown;
   precautions?: unknown;
   pastHistory?: string;
+  /** Staff-completed skincare routine answers */
+  routine?: Record<string, { answer?: string; comments?: string }>;
   /** Staff-completed sun / lifestyle answers */
   sunLifestyle?: Record<string, { answer?: string; comments?: string }>;
   /** Staff-completed aesthetic history answers */
