@@ -2,7 +2,7 @@ import {
   formatTreatmentPrice,
   relatedTreatmentsForService,
   type Treatment,
-} from "@/lib/treatments";
+} from "@/lib/treatments-shared";
 
 export type UpsellOffer = {
   sku: string;

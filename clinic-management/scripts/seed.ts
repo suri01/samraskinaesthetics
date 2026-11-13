@@ -28,7 +28,7 @@ import {
   webauthnChallenges,
 } from "../src/db/schema";
 import { encryptSecret, hashPassword } from "../src/lib/crypto";
-import { DEFAULT_TREATMENTS } from "../src/lib/treatments";
+import { DEFAULT_TREATMENTS } from "../src/lib/treatments-shared";
 
 async function main() {
   console.log("Seeding Samra clinic sample data (fictional only)…");

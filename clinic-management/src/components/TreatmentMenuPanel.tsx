@@ -11,7 +11,7 @@ import {
   penceToPoundsInput,
   type Treatment,
   type TreatmentCategory,
-} from "@/lib/treatments";
+} from "@/lib/treatments-shared";
 
 type Draft = {
   id?: string;
