@@ -13,26 +13,27 @@ export default async function IpadEntryPage() {
   return (
     <main className="ipad-shell">
       <div className="ipad-card stack">
-        <p className="badge badge--gold">Customer iPad</p>
+        <p className="badge badge--gold">Clinic iPad</p>
         {!device ? (
           <>
-            <h1>Unlock this clinic iPad</h1>
+            <h1>Authenticate this device</h1>
             <p className="muted">
-              Use the device passkey registered in clinic management (Face ID / Touch ID). Unregistered
-              iPads cannot start customer check-in.
+              Like a mobile app signing the device in: use the clinic passkey (Face ID / Touch ID) so
+              backend access stays limited to registered iPads.
             </p>
             <IpadPasskeyUnlock />
             <p className="muted" style={{ fontSize: "0.85rem", margin: 0 }}>
-              First time? Reception creates a registration link under Staff → Settings, then open it
-              here once.
+              First time setup: Staff → Settings → create a registration link, open it on this iPad
+              once.
             </p>
           </>
         ) : (
           <>
-            <h1>Welcome</h1>
+            <h1>Hand over to customer</h1>
             <p className="muted">
-              Device <strong>{device.deviceName}</strong> is unlocked. Enter the visit code from
-              reception to open this customer’s check-in.
+              Device <strong>{device.deviceName}</strong> is trusted. When you hand the iPad over,
+              ask the customer to enter the passcode you generate in clinic management — that opens{" "}
+              <em>only their</em> profile.
             </p>
             <IpadUnlockForm />
           </>

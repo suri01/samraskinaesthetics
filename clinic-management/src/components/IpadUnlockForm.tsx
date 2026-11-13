@@ -21,7 +21,7 @@ export function IpadUnlockForm() {
     const data = await res.json().catch(() => ({}));
     setBusy(false);
     if (!res.ok) {
-      setError(data.error ?? "Invalid code");
+      setError(data.error ?? "Invalid passcode");
       return;
     }
     router.push("/ipad/forms");
@@ -31,7 +31,7 @@ export function IpadUnlockForm() {
   return (
     <form className="stack" onSubmit={onSubmit}>
       <div className="field">
-        <label htmlFor="code">Unlock code</label>
+        <label htmlFor="code">Customer handover passcode</label>
         <input
           id="code"
           inputMode="numeric"
@@ -44,7 +44,7 @@ export function IpadUnlockForm() {
       </div>
       {error ? <p className="error">{error}</p> : null}
       <button className="btn btn--primary" type="submit" disabled={busy}>
-        {busy ? "Starting…" : "Continue"}
+        {busy ? "Opening profile…" : "Open my profile"}
       </button>
     </form>
   );

@@ -39,14 +39,16 @@ export default async function AppointmentDetailPage({ params }: { params: Promis
       </p>
       <div className="stack">
         <div className="panel stack">
-          <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>Customer iPad</h2>
+          <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>
+            Hand over to customer
+          </h2>
           <p className="muted" style={{ margin: 0 }}>
-            Unlock opens a short-lived visit session tied to this booking, then runs the{" "}
-            <strong>customer</strong> flow
+            The clinic iPad must already be device-authenticated with its passkey (keeps backend
+            access on trusted hardware only). When you hand the iPad over, generate a passcode here —
+            the customer enters it to open <strong>only their profile</strong>
             {!c.intakeCompletedAt
-              ? " (full details, medical history, photos, consent, treatment upsell)."
-              : " (confirm details, consent, optional upsell)."}{" "}
-            Never shares the staff cookie.
+              ? " (new-customer intake: details, medical history, photos, consent, upsell)."
+              : " (returning check-in: confirm details, consent, optional upsell)."}
           </p>
           <IssueIpadCodeButton appointmentId={a.id} />
         </div>

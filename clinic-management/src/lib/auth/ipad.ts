@@ -66,7 +66,7 @@ export async function issueIpadUnlockCode(appointmentId: string, clinicId: strin
 export async function startIpadSession(code: string): Promise<{ ok: true } | { error: string }> {
   const device = await getIpadDeviceContext();
   if (!device) {
-    return { error: "Unlock this iPad with its passkey first." };
+    return { error: "Authenticate this clinic iPad with its passkey first." };
   }
 
   const codeHash = sha256(code.trim());
@@ -126,6 +126,10 @@ export async function startIpadSession(code: string): Promise<{ ok: true } | { e
 }
 
 export async function getIpadContext(): Promise<IpadContext | null> {
+  // Mobile-app style: device trust must stay valid for any customer profile access.
+  const device = await getIpadDeviceContext();
+  if (!device) return null;
+
   const jar = await cookies();
   const token = jar.get(IPAD_COOKIE)?.value;
   if (!token) return null;
@@ -147,6 +151,8 @@ export async function getIpadContext(): Promise<IpadContext | null> {
   const { session, appointment, customer } = row;
   if (session.revokedAt || session.completedAt || session.abandonedAt) return null;
   if (session.expiresAt < new Date()) return null;
+  if (session.clinicId !== device.clinicId) return null;
+  if (session.deviceId && session.deviceId !== device.deviceId) return null;
 
   return {
     sessionId: session.id,
@@ -168,13 +174,15 @@ export async function getIpadContext(): Promise<IpadContext | null> {
     isNewCustomer: !customer.intakeCompletedAt,
     serviceName: appointment.serviceName,
     startsAt: appointment.startsAt,
-    deviceId: session.deviceId,
+    deviceId: session.deviceId ?? device.deviceId,
   };
 }
 
 export async function requireIpad(): Promise<IpadContext> {
+  const device = await getIpadDeviceContext();
+  if (!device) throw new AuthError("Registered iPad device required", 401);
   const ctx = await getIpadContext();
-  if (!ctx) throw new AuthError("iPad session required", 401);
+  if (!ctx) throw new AuthError("Customer handover session required", 401);
   return ctx;
 }
 

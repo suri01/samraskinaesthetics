@@ -23,12 +23,13 @@ export function IssueIpadCodeButton({ appointmentId }: { appointmentId: string }
   return (
     <div className="stack">
       <button className="btn btn--gold" type="button" onClick={issue} disabled={busy}>
-        {busy ? "Issuing…" : "Issue iPad unlock code"}
+        {busy ? "Generating…" : "Generate handover passcode"}
       </button>
       {code ? (
         <p className="ok">
-          Code for kiosk: <strong style={{ fontSize: "1.4rem", letterSpacing: "0.15em" }}>{code}</strong>{" "}
-          <span className="muted">(30 minutes · enter on /ipad)</span>
+          Hand this passcode to the customer:{" "}
+          <strong style={{ fontSize: "1.4rem", letterSpacing: "0.15em" }}>{code}</strong>{" "}
+          <span className="muted">(30 minutes · opens only their profile on a trusted iPad)</span>
         </p>
       ) : null}
       {error ? <p className="error">{error}</p> : null}

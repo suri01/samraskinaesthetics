@@ -36,7 +36,7 @@ export function IpadPasskeyUnlock() {
   return (
     <div className="stack">
       <button className="btn btn--primary" type="button" onClick={unlock} disabled={busy}>
-        {busy ? "Waiting for Face ID / Touch ID…" : "Unlock iPad with passkey"}
+        {busy ? "Waiting for Face ID / Touch ID…" : "Authenticate device with passkey"}
       </button>
       {error ? <p className="error">{error}</p> : null}
     </div>
