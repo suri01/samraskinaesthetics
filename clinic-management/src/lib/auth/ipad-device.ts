@@ -1,8 +1,8 @@
 import { and, eq, gt, isNull } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { db } from "@/db";
-import { ipadDeviceSessions, ipadDevices } from "@/db/schema";
-import { IPAD_DEVICE_COOKIE, IPAD_DEVICE_SESSION_MS } from "@/lib/constants";
+import { ipadDeviceSessions, ipadDevices, ipadSessions } from "@/db/schema";
+import { IPAD_COOKIE, IPAD_DEVICE_COOKIE, IPAD_DEVICE_SESSION_MS } from "@/lib/constants";
 import { randomToken, sha256 } from "@/lib/crypto";
 import { AuthError } from "./staff";
 
@@ -14,9 +14,12 @@ export type IpadDeviceContext = {
 };
 
 function cookieOptions(maxAgeSeconds: number) {
+  const secure =
+    process.env.NODE_ENV === "production" ||
+    (process.env.APP_URL ?? "").startsWith("https://");
   return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure,
     sameSite: "strict" as const,
     path: "/ipad",
     maxAge: maxAgeSeconds,
@@ -27,6 +30,18 @@ export async function createIpadDeviceSession(input: {
   clinicId: string;
   deviceId: string;
 }) {
+  // One active device session per physical iPad.
+  await db
+    .update(ipadDeviceSessions)
+    .set({ revokedAt: new Date() })
+    .where(and(eq(ipadDeviceSessions.deviceId, input.deviceId), isNull(ipadDeviceSessions.revokedAt)));
+
+  // Drop any customer handover sessions still open on this device.
+  await db
+    .update(ipadSessions)
+    .set({ revokedAt: new Date() })
+    .where(and(eq(ipadSessions.deviceId, input.deviceId), isNull(ipadSessions.revokedAt)));
+
   const token = randomToken(32);
   const now = new Date();
   const [session] = await db
@@ -42,6 +57,8 @@ export async function createIpadDeviceSession(input: {
 
   const jar = await cookies();
   jar.set(IPAD_DEVICE_COOKIE, token, cookieOptions(Math.floor(IPAD_DEVICE_SESSION_MS / 1000)));
+  // Clear any previous customer handover cookie on re-auth.
+  jar.set(IPAD_COOKIE, "", { ...cookieOptions(0), maxAge: 0 });
 
   await db
     .update(ipadDevices)
@@ -100,4 +117,18 @@ export async function clearIpadDeviceSession() {
       .where(eq(ipadDeviceSessions.tokenHash, sha256(token)));
   }
   jar.set(IPAD_DEVICE_COOKIE, "", { ...cookieOptions(0), maxAge: 0 });
+  jar.set(IPAD_COOKIE, "", { ...cookieOptions(0), maxAge: 0 });
+}
+
+/** Admin disable/revoke: kill device trust and any open customer sessions on that device. */
+export async function revokeIpadDeviceAccess(deviceId: string) {
+  const now = new Date();
+  await db
+    .update(ipadDeviceSessions)
+    .set({ revokedAt: now })
+    .where(and(eq(ipadDeviceSessions.deviceId, deviceId), isNull(ipadDeviceSessions.revokedAt)));
+  await db
+    .update(ipadSessions)
+    .set({ revokedAt: now })
+    .where(and(eq(ipadSessions.deviceId, deviceId), isNull(ipadSessions.revokedAt)));
 }

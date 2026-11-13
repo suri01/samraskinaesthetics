@@ -29,13 +29,16 @@ export type IpadContext = {
   isNewCustomer: boolean;
   serviceName: string;
   startsAt: Date;
-  deviceId: string | null;
+  deviceId: string;
 };
 
 function cookieOptions(maxAgeSeconds: number) {
+  const secure =
+    process.env.NODE_ENV === "production" ||
+    (process.env.APP_URL ?? "").startsWith("https://");
   return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure,
     sameSite: "strict" as const,
     path: "/ipad",
     maxAge: maxAgeSeconds,
@@ -152,7 +155,9 @@ export async function getIpadContext(): Promise<IpadContext | null> {
   if (session.revokedAt || session.completedAt || session.abandonedAt) return null;
   if (session.expiresAt < new Date()) return null;
   if (session.clinicId !== device.clinicId) return null;
-  if (session.deviceId && session.deviceId !== device.deviceId) return null;
+  // Strict binding: customer session must belong to this authenticated device.
+  if (!session.deviceId || session.deviceId !== device.deviceId) return null;
+  if (appointment.clinicId !== device.clinicId || customer.clinicId !== device.clinicId) return null;
 
   return {
     sessionId: session.id,
@@ -174,7 +179,7 @@ export async function getIpadContext(): Promise<IpadContext | null> {
     isNewCustomer: !customer.intakeCompletedAt,
     serviceName: appointment.serviceName,
     startsAt: appointment.startsAt,
-    deviceId: session.deviceId ?? device.deviceId,
+    deviceId: session.deviceId,
   };
 }
 

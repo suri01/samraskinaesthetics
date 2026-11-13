@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { ipadDeviceRegistrations, ipadDevices } from "@/db/schema";
 import { writeAudit } from "@/lib/audit";
+import { revokeIpadDeviceAccess } from "@/lib/auth/ipad-device";
 import { AuthError, requireStaff } from "@/lib/auth/staff";
 import { randomSetupCode, randomToken, sha256 } from "@/lib/crypto";
 
@@ -103,6 +104,9 @@ export async function PATCH(req: Request) {
     if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
 
     await db.update(ipadDevices).set({ active }).where(eq(ipadDevices.id, id));
+    if (!active) {
+      await revokeIpadDeviceAccess(id);
+    }
 
     await writeAudit({
       clinicId: staff.clinicId,
