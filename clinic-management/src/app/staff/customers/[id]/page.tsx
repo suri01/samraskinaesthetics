@@ -166,6 +166,11 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
               {inv.map((i) => (
                 <tr key={i.id}>
                   <td>{i.number}</td>
+                  <td>
+                    <span className={`badge${i.source === "auto" ? " badge--gold" : ""}`}>
+                      {i.source === "auto" ? "Auto" : "Custom"}
+                    </span>
+                  </td>
                   <td>{formatGbp(i.totalPence)}</td>
                   <td>
                     <span className="badge">{i.status}</span>

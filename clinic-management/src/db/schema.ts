@@ -428,6 +428,8 @@ export const invoices = pgTable("invoices", {
     .references(() => customers.id),
   appointmentId: uuid("appointment_id").references(() => appointments.id),
   number: text("number").notNull(),
+  /** custom = staff-created; auto = generated from an appointment/treatment */
+  source: text("source").notNull().default("custom"),
   status: invoiceStatusEnum("status").notNull().default("draft"),
   currency: varchar("currency", { length: 3 }).notNull().default("GBP"),
   subtotalPence: integer("subtotal_pence").notNull(),
@@ -436,6 +438,7 @@ export const invoices = pgTable("invoices", {
   lineItemsJson: jsonb("line_items_json")
     .$type<Array<{ description: string; quantity: number; unitPence: number }>>()
     .notNull(),
+  notes: text("notes"),
   issuedAt: timestamp("issued_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });

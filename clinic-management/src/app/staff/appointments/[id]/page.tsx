@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { and, eq } from "drizzle-orm";
+import { GenerateInvoiceButton } from "@/components/GenerateInvoiceButton";
 import { IssueIpadCodeButton } from "@/components/IssueIpadCodeButton";
 import { SendReminderButton } from "@/components/SendReminderButton";
 import { StaffShell } from "@/components/StaffShell";
 import { db } from "@/db";
-import { appointments, customers } from "@/db/schema";
+import { appointments, customers, invoices } from "@/db/schema";
 import { requireStaffPage } from "@/lib/auth/staff";
+import { formatGbp } from "@/lib/money";
 
 export default async function AppointmentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -20,6 +22,17 @@ export default async function AppointmentDetailPage({ params }: { params: Promis
   const row = rows[0];
   if (!row) notFound();
   const { appointment: a, customer: c } = row;
+
+  const linkedInvoices = await db
+    .select({
+      id: invoices.id,
+      number: invoices.number,
+      source: invoices.source,
+      status: invoices.status,
+      totalPence: invoices.totalPence,
+    })
+    .from(invoices)
+    .where(and(eq(invoices.appointmentId, a.id), eq(invoices.clinicId, ctx.clinicId)));
 
   return (
     <StaffShell>
@@ -57,6 +70,36 @@ export default async function AppointmentDetailPage({ params }: { params: Promis
         <div className="panel stack">
           <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>WhatsApp reminder</h2>
           <SendReminderButton appointmentId={a.id} />
+        </div>
+        <div className="panel stack">
+          <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>Invoice</h2>
+          <p className="muted" style={{ margin: 0 }}>
+            Generate an auto invoice from this appointment&apos;s service, or create a custom invoice
+            from the Invoices menu.
+          </p>
+          {linkedInvoices.length > 0 ? (
+            <ul style={{ margin: 0, paddingLeft: "1.1rem" }}>
+              {linkedInvoices.map((inv) => (
+                <li key={inv.id}>
+                  <Link href={`/staff/invoices/${inv.id}`}>
+                    {inv.number}
+                  </Link>{" "}
+                  <span className={`badge${inv.source === "auto" ? " badge--gold" : ""}`}>
+                    {inv.source === "auto" ? "Auto" : "Custom"}
+                  </span>{" "}
+                  <span className="badge">{inv.status}</span> · {formatGbp(inv.totalPence)}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="muted" style={{ margin: 0 }}>
+              No invoice linked yet.
+            </p>
+          )}
+          <GenerateInvoiceButton appointmentId={a.id} />
+          <Link className="btn btn--ghost" href="/staff/invoices?create=1">
+            Create custom invoice
+          </Link>
         </div>
         <div className="panel">
           <p>

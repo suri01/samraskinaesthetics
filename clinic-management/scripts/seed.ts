@@ -297,12 +297,14 @@ async function main() {
       customerId: custB.id,
       appointmentId: appt2.id,
       number: "SSA-1001",
+      source: "auto",
       status: "open",
       currency: "GBP",
       subtotalPence: 12000,
       taxPence: 0,
       totalPence: 12000,
       lineItemsJson: [{ description: "Treatment facial", quantity: 1, unitPence: 12000 }],
+      notes: "Auto-generated sample invoice",
       issuedAt: new Date(),
     })
     .returning();

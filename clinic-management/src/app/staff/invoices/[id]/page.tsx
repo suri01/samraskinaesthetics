@@ -29,8 +29,23 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
       <h1 className="page-title">{row.invoice.number}</h1>
       <p className="page-lede">
         {row.customer.firstName} {row.customer.lastName} · {formatGbp(row.invoice.totalPence)} ·{" "}
+        <span className={`badge${row.invoice.source === "auto" ? " badge--gold" : ""}`}>
+          {row.invoice.source === "auto" ? "Auto-generated" : "Custom"}
+        </span>{" "}
         <span className="badge">{row.invoice.status}</span>
       </p>
+      {row.invoice.notes ? (
+        <p className="muted" style={{ marginTop: 0 }}>
+          {row.invoice.notes}
+        </p>
+      ) : null}
+      {row.invoice.appointmentId ? (
+        <p className="muted" style={{ marginTop: 0 }}>
+          <Link href={`/staff/appointments/${row.invoice.appointmentId}`}>
+            View linked appointment
+          </Link>
+        </p>
+      ) : null}
       <div className="stack">
         <div className="panel">
           <table className="table">
