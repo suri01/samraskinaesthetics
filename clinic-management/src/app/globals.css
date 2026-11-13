@@ -1,19 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  /* Sampled from logo artwork backdrop so the mark blends into the plate */
-  --champagne: #dacfc2;
-  --champagne-deep: #cfc0b0;
+  /* brand-mock-welcome-open: champagne → sage atmosphere */
+  --champagne: #e8dccf;
+  --champagne-deep: #d4c4b2;
   --ivory: #f4efe8;
   --pearl: #f7f4ef;
   --mist: #ebe4da;
   --sage: #6f8576;
+  --sage-mist: #9aab9c;
   --moss: #2b3a31;
   --ink: #1a211c;
   --gold: #b08d57;
   --gold-soft: #d4bc8a;
   --white: #ffffff;
-  --line: rgba(26, 33, 28, 0.1);
+  --line: rgba(26, 33, 28, 0.12);
   --danger: #8a3b2f;
   --ok: #2f6b4f;
   --background: var(--pearl);
@@ -47,11 +48,14 @@ body {
 
 body {
   color: var(--ink);
+  /* Champagne (top-left) → soft sage (bottom-right), matching welcome mock */
   background:
-    radial-gradient(1000px 520px at 85% -10%, rgba(176, 141, 87, 0.14), transparent 55%),
-    radial-gradient(700px 420px at -5% 20%, rgba(111, 133, 118, 0.1), transparent 50%),
-    linear-gradient(165deg, var(--champagne) 0%, var(--pearl) 42%, var(--ivory) 100%);
+    radial-gradient(900px 560px at 12% 8%, rgba(232, 220, 207, 0.95), transparent 58%),
+    radial-gradient(820px 620px at 92% 88%, rgba(111, 133, 118, 0.28), transparent 55%),
+    radial-gradient(640px 420px at 70% 20%, rgba(176, 141, 87, 0.08), transparent 50%),
+    linear-gradient(155deg, var(--champagne) 0%, var(--pearl) 48%, #dfe6df 100%);
   font-family: var(--font-body), Georgia, serif;
+  min-height: 100vh;
 }
 
 a {
@@ -73,8 +77,7 @@ a {
 .brand-mark {
   display: block;
   line-height: 0;
-  /* Same tone as gate/rail champagne plate — hides PNG edges */
-  background: var(--champagne);
+  background: transparent;
 }
 
 .brand-mark__img {
@@ -84,17 +87,20 @@ a {
 }
 
 .brand-mark--gate {
-  width: min(17.5rem, 68vw);
+  width: min(16.5rem, 70vw);
   margin-inline: auto;
+  filter: drop-shadow(0 12px 28px rgba(26, 33, 28, 0.12));
 }
 
 .brand-mark--rail {
   width: 100%;
-  max-width: 11.5rem;
+  max-width: 10.5rem;
+  filter: drop-shadow(0 6px 14px rgba(26, 33, 28, 0.1));
 }
 
 .brand-mark--masthead {
   width: min(14rem, 55vw);
+  filter: drop-shadow(0 8px 18px rgba(26, 33, 28, 0.1));
 }
 
 /* —— Gate compositions (home / login / iPad entry) —— */
@@ -105,13 +111,18 @@ a {
   padding: clamp(1.25rem, 4vw, 2.5rem);
 }
 
+.gate--open {
+  padding-block: clamp(2rem, 8vh, 4.5rem);
+}
+
 .gate__frame {
   width: min(28rem, 100%);
   border-radius: 1.6rem;
   overflow: hidden;
   border: 1px solid rgba(26, 33, 28, 0.08);
   box-shadow: var(--shadow-soft);
-  background: var(--ivory);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
   animation: gate-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -119,13 +130,27 @@ a {
   width: min(34rem, 100%);
 }
 
+.gate__frame--open {
+  width: min(34rem, 100%);
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  backdrop-filter: none;
+  overflow: visible;
+}
+
 .gate__brand {
-  /* Soft plate matched to logo champagne fill — mark reads as part of the field */
-  background:
-    radial-gradient(520px 220px at 50% 0%, rgba(255, 255, 255, 0.22), transparent 72%),
-    linear-gradient(180deg, var(--champagne) 0%, var(--champagne) 55%, var(--champagne-deep) 100%);
-  padding: clamp(1.75rem, 4vw, 2.4rem) 1.5rem 1.35rem;
+  background: transparent;
+  padding: clamp(1.5rem, 4vw, 2.1rem) 1.5rem 0.75rem;
   text-align: center;
+}
+
+.gate__frame--open .gate__brand {
+  padding: 0 1rem 1.5rem;
+}
+
+.gate__frame--open .brand-mark--gate {
+  width: min(18rem, 78vw);
 }
 
 .gate__eyebrow {
@@ -137,10 +162,17 @@ a {
 }
 
 .gate__body {
-  padding: 1.6rem 1.55rem 1.75rem;
+  padding: 1.15rem 1.55rem 1.75rem;
   display: grid;
   gap: 1rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), var(--ivory));
+  background: transparent;
+}
+
+.gate__frame--open .gate__body {
+  padding: 0.35rem 1.25rem 0;
+  justify-items: center;
+  text-align: center;
+  gap: 1.1rem;
 }
 
 .gate__body h1 {
@@ -152,11 +184,21 @@ a {
   line-height: 1.15;
 }
 
+.gate__frame--open .gate__body h1 {
+  font-size: clamp(1.85rem, 4.6vw, 2.45rem);
+  max-width: 16ch;
+}
+
 .gate__lede {
   margin: 0;
   color: rgba(26, 33, 28, 0.68);
-  line-height: 1.45;
-  max-width: 28ch;
+  line-height: 1.5;
+  max-width: 36ch;
+}
+
+.gate__frame--open .gate__lede {
+  max-width: 38ch;
+  font-size: 1.02rem;
 }
 
 .gate__actions {
@@ -164,6 +206,12 @@ a {
   flex-wrap: wrap;
   gap: 0.7rem;
   margin-top: 0.35rem;
+}
+
+.gate__frame--open .gate__actions {
+  justify-content: center;
+  margin-top: 0.75rem;
+  gap: 0.85rem;
 }
 
 @keyframes gate-in {
@@ -212,8 +260,13 @@ a {
 }
 
 .btn--ghost {
-  background: rgba(255, 255, 255, 0.55);
-  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(43, 58, 49, 0.28);
+  color: var(--moss);
+}
+
+.btn--ghost:hover {
+  background: rgba(111, 133, 118, 0.12);
 }
 
 .btn--danger {
@@ -323,9 +376,7 @@ a {
 }
 
 .staff-nav__brand {
-  background:
-    radial-gradient(280px 120px at 50% 0%, rgba(255, 255, 255, 0.2), transparent 70%),
-    linear-gradient(180deg, var(--champagne) 0%, var(--champagne) 60%, var(--champagne-deep) 100%);
+  background: transparent;
   padding: 1.15rem 1rem 1rem;
   border-bottom: 1px solid rgba(26, 33, 28, 0.06);
 }

@@ -12,9 +12,7 @@ type BrandLogoProps = {
 };
 
 /**
- * Brand mark only — no duplicate wordmark text.
- * Artwork is filled with champagne that matches the gate/rail plate so
- * the logo blends into the brand field instead of reading as a sticker.
+ * Transparent gold brand mark — sits on champagne/sage atmosphere, no plate fill.
  */
 export function BrandLogo({
   href = "/",
@@ -28,9 +26,10 @@ export function BrandLogo({
         src={placement === "rail" ? "/brand/samra-logo-320.png" : "/brand/samra-logo.png"}
         alt={BRAND.name}
         width={placement === "rail" ? 320 : 800}
-        height={placement === "rail" ? 236 : 591}
+        height={placement === "rail" ? 235 : 589}
         priority={priority}
         className="brand-mark__img"
+        unoptimized
       />
     </span>
   );
