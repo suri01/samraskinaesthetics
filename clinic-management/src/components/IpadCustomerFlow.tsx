@@ -345,6 +345,9 @@ export function IpadCustomerFlow(props: {
             />
             <span>Email appointment updates</span>
           </label>
+          <p className="muted" style={{ margin: 0, fontSize: "0.9rem" }}>
+            These are appointment reminders only — not marketing messages.
+          </p>
         </section>
       ) : null}
 

@@ -15,6 +15,7 @@ import {
   treatmentRecords,
 } from "@/db/schema";
 import { requireStaffPage } from "@/lib/auth/staff";
+import { formatUkDate, formatUkDateTime } from "@/lib/dates";
 import { formatGbp } from "@/lib/money";
 
 export default async function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -72,7 +73,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
         {customer.firstName} {customer.lastName}
       </h1>
       <p className="page-lede">
-        {customer.email} · {customer.phone} · DOB {customer.dateOfBirth ?? "—"} ·{" "}
+        {customer.email} · {customer.phone} · DOB {formatUkDate(customer.dateOfBirth)} ·{" "}
         {customer.intakeCompletedAt ? (
           <span className="badge">Intake complete</span>
         ) : (
@@ -107,8 +108,9 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
           ) : null}
           <p className="muted" style={{ margin: 0 }}>
             Registered via {customer.registeredVia} · Comms: WhatsApp{" "}
-            {customer.whatsappOptIn ? "yes" : "no"} · Email {customer.emailOptIn ? "yes" : "no"} · Marketing{" "}
-            {customer.marketingOptIn ? "yes" : "no"} (no marketing without opt-in)
+            {customer.whatsappOptIn ? "yes" : "no"} · Email {customer.emailOptIn ? "yes" : "no"}
+            {customer.marketingOptIn ? " · Marketing yes" : ""} — WhatsApp/Email from iPad details
+            (or booking); marketing not asked yet
           </p>
         </div>
 
@@ -135,7 +137,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
             <tbody>
               {appts.map((a) => (
                 <tr key={a.id}>
-                  <td>{a.startsAt.toLocaleString("en-GB", { timeZone: "Europe/London" })}</td>
+                  <td>{formatUkDateTime(a.startsAt)}</td>
                   <td>{a.serviceName}</td>
                   <td>
                     <span className="badge">{a.status}</span>
@@ -185,7 +187,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
             <ul style={{ margin: 0, paddingLeft: "1.1rem" }}>
               {forms.map((f) => (
                 <li key={f.id}>
-                  {f.createdAt.toLocaleString("en-GB", { timeZone: "Europe/London" })}
+                  {formatUkDateTime(f.createdAt)}
                   {f.signedName ? ` · signed ${f.signedName}` : ""}
                 </li>
               ))}

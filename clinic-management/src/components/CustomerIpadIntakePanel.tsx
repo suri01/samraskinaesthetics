@@ -6,6 +6,7 @@ import {
   type ConsultationAnswers,
   type YnAnswer,
 } from "@/lib/consultation-form";
+import { formatUkDate, formatUkDateTime } from "@/lib/dates";
 
 function asConsultation(raw: unknown): ConsultationAnswers | null {
   if (!raw || typeof raw !== "object") return null;
@@ -84,9 +85,7 @@ export function CustomerIpadIntakePanel(props: {
       <p className="muted" style={{ margin: 0 }}>
         What the customer completed on the clinic iPad
         {props.intakeCompletedAt
-          ? ` · finished ${props.intakeCompletedAt.toLocaleString("en-GB", {
-              timeZone: "Europe/London",
-            })} (Europe/London)`
+          ? ` · finished ${formatUkDateTime(props.intakeCompletedAt)} (Europe/London)`
           : " · intake not finished yet"}
         .
       </p>
@@ -108,7 +107,7 @@ export function CustomerIpadIntakePanel(props: {
               {form.details.phone ? ` · ${form.details.phone}` : ""}
             </p>
             <p className="muted" style={{ margin: 0 }}>
-              DOB {form.details.dateOfBirth || "—"} ·{" "}
+              DOB {formatUkDate(form.details.dateOfBirth)} ·{" "}
               {[form.details.line1, form.details.city, form.details.postcode]
                 .filter(Boolean)
                 .join(", ") ||
@@ -220,7 +219,7 @@ export function CustomerIpadIntakePanel(props: {
             <details key={c.id}>
               <summary>
                 {c.title} · {c.signedName} ·{" "}
-                {c.signedAt.toLocaleString("en-GB", { timeZone: "Europe/London" })}
+                {formatUkDateTime(c.signedAt)}
               </summary>
               <pre
                 style={{

@@ -11,6 +11,7 @@ import {
   type YnAnswer,
 } from "@/lib/consultation-form";
 import type { MedicalHistory } from "@/db/schema";
+import { formatUkDateTime } from "@/lib/dates";
 
 function ynFromStored(
   stored: Record<string, { answer?: string; comments?: string }> | undefined,
@@ -156,11 +157,7 @@ export function StaffConsultationForm(props: {
       </p>
       {mh.staffConsultationAt ? (
         <p className="muted" style={{ margin: 0 }}>
-          Last saved{" "}
-          {new Date(mh.staffConsultationAt).toLocaleString("en-GB", {
-            timeZone: "Europe/London",
-          })}{" "}
-          (Europe/London)
+          Last saved {formatUkDateTime(mh.staffConsultationAt)} (Europe/London)
         </p>
       ) : null}
 
