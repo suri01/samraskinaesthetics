@@ -2,18 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { bookingServiceOptions } from "@/lib/treatments";
 
-const SERVICE_OPTIONS = bookingServiceOptions();
-
-export function RegisterBookingForm() {
+export function RegisterBookingForm(props: {
+  serviceOptions: Array<{ value: string; label: string }>;
+}) {
   const router = useRouter();
+  const options = props.serviceOptions;
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [serviceName, setServiceName] = useState(
-    SERVICE_OPTIONS[0]?.value ?? "Initial skin consultation",
+    options[0]?.value ?? "Initial skin consultation",
   );
   const [startsAt, setStartsAt] = useState("");
   const [whatsappOptIn, setWhatsappOptIn] = useState(true);
@@ -90,7 +90,7 @@ export function RegisterBookingForm() {
       <div className="field">
         <label htmlFor="bsvc">Treatment booked</label>
         <select id="bsvc" value={serviceName} onChange={(e) => setServiceName(e.target.value)}>
-          {SERVICE_OPTIONS.map((opt) => (
+          {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>

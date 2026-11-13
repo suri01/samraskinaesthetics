@@ -527,3 +527,30 @@ export const clinicSettings = pgTable("clinic_settings", {
   consentTemplate: text("consent_template").notNull().default(""),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+/** Editable clinic treatment menu / price list */
+export const clinicTreatments = pgTable(
+  "clinic_treatments",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    clinicId: uuid("clinic_id")
+      .notNull()
+      .references(() => clinics.id),
+    sku: text("sku").notNull(),
+    category: text("category").notNull(),
+    name: text("name").notNull(),
+    serviceName: text("service_name").notNull(),
+    pricePence: integer("price_pence"),
+    fromPrice: boolean("from_price").notNull().default(false),
+    priceNote: text("price_note"),
+    blurb: text("blurb"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    active: boolean("active").notNull().default(true),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("clinic_treatments_clinic_sku_uidx").on(t.clinicId, t.sku),
+    index("clinic_treatments_clinic_active_idx").on(t.clinicId, t.active),
+  ],
+);

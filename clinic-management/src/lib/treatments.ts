@@ -1,8 +1,11 @@
+import { and, asc, eq } from "drizzle-orm";
+import { db } from "@/db";
+import { clinicTreatments } from "@/db/schema";
 import { formatGbp } from "@/lib/money";
 
 /**
- * Samra Skin & Aesthetics treatment menu (list prices).
- * All treatments subject to consultation, medical history and suitability.
+ * Samra Skin & Aesthetics treatment menu types + defaults.
+ * Live catalogue is stored in `clinic_treatments` and edited in Settings.
  */
 
 export type TreatmentCategory =
@@ -12,6 +15,7 @@ export type TreatmentCategory =
   | "hydration";
 
 export type Treatment = {
+  id?: string;
   sku: string;
   category: TreatmentCategory;
   name: string;
@@ -24,6 +28,8 @@ export type Treatment = {
   /** Appended after price, e.g. “per session” */
   priceNote?: string;
   blurb?: string;
+  sortOrder?: number;
+  active?: boolean;
 };
 
 export const TREATMENT_MENU_TAGLINE =
@@ -39,7 +45,15 @@ export const CATEGORY_LABELS: Record<TreatmentCategory, string> = {
   hydration: "Skin hydration and quality",
 };
 
-export const TREATMENTS: Treatment[] = [
+export const CATEGORY_ORDER: TreatmentCategory[] = [
+  "microneedling",
+  "peels",
+  "hydration",
+  "consultations",
+];
+
+/** Default catalogue seeded into the DB when a clinic has no rows yet. */
+export const DEFAULT_TREATMENTS: Treatment[] = [
   {
     sku: "consult-initial",
     category: "consultations",
@@ -47,6 +61,7 @@ export const TREATMENTS: Treatment[] = [
     serviceName: "Initial skin consultation",
     pricePence: 2500,
     blurb: "First visit assessment and personalised plan.",
+    sortOrder: 10,
   },
   {
     sku: "consult-review",
@@ -55,6 +70,7 @@ export const TREATMENTS: Treatment[] = [
     serviceName: "Review appointment",
     pricePence: null,
     blurb: "As clinically indicated.",
+    sortOrder: 20,
   },
   {
     sku: "dermapen-face",
@@ -62,6 +78,7 @@ export const TREATMENTS: Treatment[] = [
     name: "Face",
     serviceName: "Dermapen 4 microneedling — Face",
     pricePence: 15000,
+    sortOrder: 30,
   },
   {
     sku: "dermapen-face-neck",
@@ -69,6 +86,7 @@ export const TREATMENTS: Treatment[] = [
     name: "Face and neck",
     serviceName: "Dermapen 4 microneedling — Face and neck",
     pricePence: 18000,
+    sortOrder: 40,
   },
   {
     sku: "peel-neostrata",
@@ -78,6 +96,7 @@ export const TREATMENTS: Treatment[] = [
     pricePence: 8500,
     fromPrice: true,
     blurb: "Treatment selection following skin consultation.",
+    sortOrder: 50,
   },
   {
     sku: "profhilo",
@@ -86,6 +105,7 @@ export const TREATMENTS: Treatment[] = [
     serviceName: "Profhilo H+L",
     pricePence: 23000,
     priceNote: "per session",
+    sortOrder: 60,
   },
   {
     sku: "polyphil",
@@ -94,51 +114,116 @@ export const TREATMENTS: Treatment[] = [
     serviceName: "Croma PolyPhil",
     pricePence: 18000,
     priceNote: "per session",
+    sortOrder: 70,
   },
 ];
 
-export function formatTreatmentPrice(t: Treatment): string {
+export function isTreatmentCategory(value: string): value is TreatmentCategory {
+  return value in CATEGORY_LABELS;
+}
+
+export function formatTreatmentPrice(t: Pick<Treatment, "pricePence" | "fromPrice" | "priceNote">): string {
   if (t.pricePence == null) return "As clinically indicated";
   const base = formatGbp(t.pricePence);
   const priced = t.fromPrice ? `from ${base}` : base;
   return t.priceNote ? `${priced} ${t.priceNote}` : priced;
 }
 
-export function treatmentsByCategory(): Array<{
+export function rowToTreatment(row: typeof clinicTreatments.$inferSelect): Treatment {
+  return {
+    id: row.id,
+    sku: row.sku,
+    category: isTreatmentCategory(row.category) ? row.category : "consultations",
+    name: row.name,
+    serviceName: row.serviceName,
+    pricePence: row.pricePence,
+    fromPrice: row.fromPrice,
+    priceNote: row.priceNote ?? undefined,
+    blurb: row.blurb ?? undefined,
+    sortOrder: row.sortOrder,
+    active: row.active,
+  };
+}
+
+export async function ensureDefaultTreatments(clinicId: string) {
+  const existing = await db
+    .select({ id: clinicTreatments.id })
+    .from(clinicTreatments)
+    .where(eq(clinicTreatments.clinicId, clinicId))
+    .limit(1);
+  if (existing[0]) return;
+
+  await db.insert(clinicTreatments).values(
+    DEFAULT_TREATMENTS.map((t) => ({
+      clinicId,
+      sku: t.sku,
+      category: t.category,
+      name: t.name,
+      serviceName: t.serviceName,
+      pricePence: t.pricePence,
+      fromPrice: Boolean(t.fromPrice),
+      priceNote: t.priceNote ?? null,
+      blurb: t.blurb ?? null,
+      sortOrder: t.sortOrder ?? 0,
+      active: true,
+    })),
+  );
+}
+
+export async function listClinicTreatments(
+  clinicId: string,
+  opts?: { includeInactive?: boolean },
+): Promise<Treatment[]> {
+  await ensureDefaultTreatments(clinicId);
+  const rows = await db
+    .select()
+    .from(clinicTreatments)
+    .where(
+      opts?.includeInactive
+        ? eq(clinicTreatments.clinicId, clinicId)
+        : and(eq(clinicTreatments.clinicId, clinicId), eq(clinicTreatments.active, true)),
+    )
+    .orderBy(asc(clinicTreatments.sortOrder), asc(clinicTreatments.name));
+  return rows.map(rowToTreatment);
+}
+
+export function treatmentsByCategory(items: Treatment[]): Array<{
   category: TreatmentCategory;
   label: string;
   items: Treatment[];
 }> {
-  const order: TreatmentCategory[] = [
-    "microneedling",
-    "peels",
-    "hydration",
-    "consultations",
-  ];
-  return order.map((category) => ({
+  return CATEGORY_ORDER.map((category) => ({
     category,
     label: CATEGORY_LABELS[category],
-    items: TREATMENTS.filter((t) => t.category === category),
-  }));
+    items: items.filter((t) => t.category === category),
+  })).filter((g) => g.items.length > 0);
 }
 
 /** Options for booking / appointment service select */
-export function bookingServiceOptions(): Array<{ value: string; label: string }> {
-  return TREATMENTS.map((t) => ({
+export function bookingServiceOptions(
+  items: Treatment[],
+): Array<{ value: string; label: string }> {
+  return items.map((t) => ({
     value: t.serviceName,
     label: `${t.serviceName} · ${formatTreatmentPrice(t)}`,
   }));
 }
 
-export function findTreatmentByServiceName(serviceName: string): Treatment | undefined {
+export function findTreatmentByServiceName(
+  items: Treatment[],
+  serviceName: string,
+): Treatment | undefined {
   const needle = serviceName.trim().toLowerCase();
-  return TREATMENTS.find((t) => t.serviceName.toLowerCase() === needle);
+  return items.find((t) => t.serviceName.toLowerCase() === needle);
 }
 
-/** Related treatments to suggest as iPad interest (exclude the booked one). */
-export function relatedTreatmentsForService(serviceName: string): Treatment[] {
-  const booked = findTreatmentByServiceName(serviceName);
-  const others = TREATMENTS.filter((t) => t.sku !== booked?.sku);
+/** Related treatments to suggest (exclude the booked one). */
+export function relatedTreatmentsForService(
+  items: Treatment[],
+  serviceName: string,
+): Treatment[] {
+  const booked = findTreatmentByServiceName(items, serviceName);
+  const others = items.filter((t) => t.sku !== booked?.sku);
 
   if (booked?.category === "consultations") {
     return others.filter((t) => t.category !== "consultations");
@@ -159,4 +244,17 @@ export function relatedTreatmentsForService(serviceName: string): Treatment[] {
     );
   }
   return others.slice(0, 4);
+}
+
+export function poundsToPence(input: string): number | null {
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+  const n = Number(trimmed.replace(/£/g, "").replace(/,/g, ""));
+  if (!Number.isFinite(n)) return null;
+  return Math.round(n * 100);
+}
+
+export function penceToPoundsInput(pence: number | null | undefined): string {
+  if (pence == null) return "";
+  return (pence / 100).toFixed(pence % 100 === 0 ? 0 : 2);
 }

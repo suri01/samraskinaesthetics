@@ -6,7 +6,8 @@ import { TreatmentMenuPanel } from "@/components/TreatmentMenuPanel";
 import { db } from "@/db";
 import { clinicSettings, staffUsers } from "@/db/schema";
 import { requireStaffPage } from "@/lib/auth/staff";
-import { ROLE_PERMISSIONS, isAdmin } from "@/lib/constants";
+import { ROLE_PERMISSIONS, isAdmin, roleCan } from "@/lib/constants";
+import { listClinicTreatments } from "@/lib/treatments";
 
 export default async function SettingsPage() {
   const ctx = await requireStaffPage();
@@ -17,6 +18,9 @@ export default async function SettingsPage() {
     .limit(1);
   const staff = await db.select().from(staffUsers).where(eq(staffUsers.clinicId, ctx.clinicId));
   const me = staff.find((s) => s.id === ctx.staffUserId);
+  const treatments = await listClinicTreatments(ctx.clinicId, { includeInactive: true });
+  const canEditTreatments =
+    isAdmin(ctx.role) || roleCan(ctx.role, "appointments") || roleCan(ctx.role, "treatments");
 
   return (
     <StaffShell>
@@ -24,7 +28,7 @@ export default async function SettingsPage() {
       <p className="page-lede">Clinic security, staff access, consent, treatments, and registered iPads.</p>
       <div className="stack">
         <div className="panel">
-          <TreatmentMenuPanel />
+          <TreatmentMenuPanel initialItems={treatments} canEdit={canEditTreatments} />
         </div>
 
         {isAdmin(ctx.role) ? (

@@ -23,10 +23,12 @@ import {
   photos,
   staffUsers,
   tasks,
+  clinicTreatments,
   treatmentRecords,
   webauthnChallenges,
 } from "../src/db/schema";
 import { encryptSecret, hashPassword } from "../src/lib/crypto";
+import { DEFAULT_TREATMENTS } from "../src/lib/treatments";
 
 async function main() {
   console.log("Seeding Samra clinic sample data (fictional only)…");
@@ -38,6 +40,7 @@ async function main() {
   await db.delete(invoices);
   await db.delete(photos);
   await db.delete(treatmentRecords);
+  await db.delete(clinicTreatments);
   await db.delete(consentRecords);
   await db.delete(formSubmissions);
   await db.delete(formTemplates);
@@ -121,6 +124,22 @@ async function main() {
     consentTemplate:
       "Patient consent is captured on the iPad consultation journey (medical discussion, expectations, risks, aftercare, and signature). Reference: docs/forms/consultation-consent-aftercare.pdf.",
   });
+
+  await db.insert(clinicTreatments).values(
+    DEFAULT_TREATMENTS.map((t) => ({
+      clinicId: clinic.id,
+      sku: t.sku,
+      category: t.category,
+      name: t.name,
+      serviceName: t.serviceName,
+      pricePence: t.pricePence,
+      fromPrice: Boolean(t.fromPrice),
+      priceNote: t.priceNote ?? null,
+      blurb: t.blurb ?? null,
+      sortOrder: t.sortOrder ?? 0,
+      active: true,
+    })),
+  );
 
   const [custA, custB, custC] = await db
     .insert(customers)

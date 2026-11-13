@@ -5,6 +5,7 @@ import { StaffShell } from "@/components/StaffShell";
 import { db } from "@/db";
 import { appointments, customers } from "@/db/schema";
 import { requireStaffPage } from "@/lib/auth/staff";
+import { bookingServiceOptions, listClinicTreatments } from "@/lib/treatments";
 
 export default async function AppointmentsPage() {
   const ctx = await requireStaffPage("appointments");
@@ -17,6 +18,8 @@ export default async function AppointmentsPage() {
     .innerJoin(customers, eq(customers.id, appointments.customerId))
     .where(eq(appointments.clinicId, ctx.clinicId))
     .orderBy(desc(appointments.startsAt));
+  const treatments = await listClinicTreatments(ctx.clinicId);
+  const serviceOptions = bookingServiceOptions(treatments);
 
   return (
     <StaffShell>
@@ -27,7 +30,7 @@ export default async function AppointmentsPage() {
       </p>
       <div className="stack">
         <div className="panel">
-          <RegisterBookingForm />
+          <RegisterBookingForm serviceOptions={serviceOptions} />
         </div>
         <div className="panel">
           <table className="table">

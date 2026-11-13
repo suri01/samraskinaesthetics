@@ -11,7 +11,6 @@ import {
 import { writeAudit } from "@/lib/audit";
 import { completeIpadSession, requireIpad } from "@/lib/auth/ipad";
 import { AuthError } from "@/lib/auth/staff";
-import { upsellsForService } from "@/lib/upsells";
 
 export async function POST(req: Request) {
   try {
@@ -31,15 +30,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Name required" }, { status: 400 });
     }
 
-    const upsellSkus: string[] = Array.isArray(body.upsellSkus)
-      ? body.upsellSkus.map(String)
-      : [];
-    const catalogue = upsellsForService(ctx.serviceName);
-    const chosen = catalogue.filter((o) => upsellSkus.includes(o.sku));
-    const notedAt = new Date().toISOString();
-
     const [existingCustomer] = await db
-      .select({ medicalHistoryJson: customers.medicalHistoryJson, allergies: customers.allergies, medicalNotes: customers.medicalNotes })
+      .select({
+        medicalHistoryJson: customers.medicalHistoryJson,
+        allergies: customers.allergies,
+        medicalNotes: customers.medicalNotes,
+        upsellInterestJson: customers.upsellInterestJson,
+      })
       .from(customers)
       .where(eq(customers.id, ctx.customerId))
       .limit(1);
@@ -76,12 +73,7 @@ export async function POST(req: Request) {
         whatsappOptIn: Boolean(details.whatsappOptIn),
         emailOptIn: Boolean(details.emailOptIn),
         intakeCompletedAt: new Date(),
-        upsellInterestJson: chosen.map((o) => ({
-          sku: o.sku,
-          title: o.title,
-          bookedService: ctx.serviceName,
-          notedAt,
-        })),
+        upsellInterestJson: existingCustomer?.upsellInterestJson ?? [],
         updatedAt: new Date(),
       })
       .where(eq(customers.id, ctx.customerId));
@@ -105,7 +97,6 @@ export async function POST(req: Request) {
           medical,
           consultation,
           aftercareAcknowledged: Boolean(body.aftercareAcknowledged),
-          upsellSkus,
         },
         signedName,
         signedAt: new Date(),
@@ -133,14 +124,12 @@ export async function POST(req: Request) {
       entityId: ctx.customerId,
       meta: {
         appointmentId: ctx.appointmentId,
-        upsellCount: chosen.length,
-        upsellSkus: chosen.map((o) => o.sku),
         aftercareAcknowledged: Boolean(body.aftercareAcknowledged),
       },
     });
 
     await completeIpadSession();
-    return NextResponse.json({ ok: true, upsellNoted: chosen.length });
+    return NextResponse.json({ ok: true });
   } catch (e) {
     const err = e as AuthError;
     return NextResponse.json({ error: err.message }, { status: err.status ?? 500 });

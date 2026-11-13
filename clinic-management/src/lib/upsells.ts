@@ -21,11 +21,11 @@ function toOffer(t: Treatment): UpsellOffer {
 }
 
 /**
- * iPad “enhance today’s visit” options drawn from the live treatment menu,
+ * Related treatment suggestions drawn from the clinic menu,
  * excluding the service already booked.
  */
-export function upsellsForService(serviceName: string): UpsellOffer[] {
-  const related = relatedTreatmentsForService(serviceName).map(toOffer);
+export function upsellsForService(items: Treatment[], serviceName: string): UpsellOffer[] {
+  const related = relatedTreatmentsForService(items, serviceName).map(toOffer);
   if (related.length > 0) return related;
   return [
     {
