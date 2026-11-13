@@ -204,6 +204,85 @@ export const appointments = pgTable(
   ],
 );
 
+export const ipadDevices = pgTable(
+  "ipad_devices",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    clinicId: uuid("clinic_id")
+      .notNull()
+      .references(() => clinics.id),
+    name: text("name").notNull(),
+    /** WebAuthn credential ID (base64url). */
+    credentialId: text("credential_id").notNull(),
+    publicKey: text("public_key").notNull(),
+    counter: integer("counter").notNull().default(0),
+    transportsJson: jsonb("transports_json").$type<string[]>(),
+    deviceType: text("device_type"),
+    backedUp: boolean("backed_up").notNull().default(false),
+    active: boolean("active").notNull().default(true),
+    registeredByStaffId: uuid("registered_by_staff_id").references(() => staffUsers.id),
+    lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("ipad_devices_credential_uidx").on(t.credentialId),
+    index("ipad_devices_clinic_idx").on(t.clinicId),
+  ],
+);
+
+/** One-time staff-issued tokens so an iPad can register a passkey without a staff browser session. */
+export const ipadDeviceRegistrations = pgTable(
+  "ipad_device_registrations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    clinicId: uuid("clinic_id")
+      .notNull()
+      .references(() => clinics.id),
+    name: text("name").notNull(),
+    tokenHash: text("token_hash").notNull(),
+    createdByStaffId: uuid("created_by_staff_id").references(() => staffUsers.id),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    consumedAt: timestamp("consumed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [uniqueIndex("ipad_device_registrations_token_uidx").on(t.tokenHash)],
+);
+
+export const webauthnChallenges = pgTable(
+  "webauthn_challenges",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    clinicId: uuid("clinic_id").references(() => clinics.id),
+    purpose: text("purpose").notNull(),
+    challenge: text("challenge").notNull(),
+    registrationId: uuid("registration_id").references(() => ipadDeviceRegistrations.id),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [index("webauthn_challenges_challenge_idx").on(t.challenge)],
+);
+
+export const ipadDeviceSessions = pgTable(
+  "ipad_device_sessions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    clinicId: uuid("clinic_id")
+      .notNull()
+      .references(() => clinics.id),
+    deviceId: uuid("device_id")
+      .notNull()
+      .references(() => ipadDevices.id, { onDelete: "cascade" }),
+    tokenHash: text("token_hash").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("ipad_device_sessions_token_uidx").on(t.tokenHash),
+    index("ipad_device_sessions_device_idx").on(t.deviceId),
+  ],
+);
+
 export const ipadSessions = pgTable(
   "ipad_sessions",
   {
@@ -217,6 +296,7 @@ export const ipadSessions = pgTable(
     customerId: uuid("customer_id")
       .notNull()
       .references(() => customers.id),
+    deviceId: uuid("device_id").references(() => ipadDevices.id),
     tokenHash: text("token_hash").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),

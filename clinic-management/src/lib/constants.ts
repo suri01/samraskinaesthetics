@@ -1,9 +1,12 @@
 export const STAFF_COOKIE = "ssa_staff";
 export const IPAD_COOKIE = "ssa_ipad";
+export const IPAD_DEVICE_COOKIE = "ssa_ipad_device";
 
 export const IDLE_LOCK_MS = 15 * 60 * 1000;
 export const MAX_SESSION_MS = 12 * 60 * 60 * 1000;
 export const IPAD_SESSION_MS = 2 * 60 * 60 * 1000;
+/** Registered kiosk device session after passkey auth. */
+export const IPAD_DEVICE_SESSION_MS = 12 * 60 * 60 * 1000;
 export const REAUTH_WINDOW_MS = 10 * 60 * 1000;
 
 export const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;

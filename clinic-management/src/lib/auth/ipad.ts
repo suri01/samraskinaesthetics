@@ -5,6 +5,7 @@ import { appointments, customers, type MedicalHistory, ipadSessions } from "@/db
 import { writeAudit } from "@/lib/audit";
 import { IPAD_COOKIE, IPAD_SESSION_MS } from "@/lib/constants";
 import { randomNumericCode, randomToken, sha256 } from "@/lib/crypto";
+import { getIpadDeviceContext } from "./ipad-device";
 import { AuthError } from "./staff";
 
 export type IpadContext = {
@@ -28,6 +29,7 @@ export type IpadContext = {
   isNewCustomer: boolean;
   serviceName: string;
   startsAt: Date;
+  deviceId: string | null;
 };
 
 function cookieOptions(maxAgeSeconds: number) {
@@ -62,6 +64,11 @@ export async function issueIpadUnlockCode(appointmentId: string, clinicId: strin
 }
 
 export async function startIpadSession(code: string): Promise<{ ok: true } | { error: string }> {
+  const device = await getIpadDeviceContext();
+  if (!device) {
+    return { error: "Unlock this iPad with its passkey first." };
+  }
+
   const codeHash = sha256(code.trim());
   const rows = await db
     .select()
@@ -71,6 +78,9 @@ export async function startIpadSession(code: string): Promise<{ ok: true } | { e
   const appt = rows[0];
   if (!appt || !appt.ipadUnlockExpiresAt || appt.ipadUnlockExpiresAt < new Date()) {
     return { error: "Invalid or expired code." };
+  }
+  if (appt.clinicId !== device.clinicId) {
+    return { error: "This visit belongs to another clinic." };
   }
 
   await db
@@ -84,6 +94,7 @@ export async function startIpadSession(code: string): Promise<{ ok: true } | { e
     clinicId: appt.clinicId,
     appointmentId: appt.id,
     customerId: appt.customerId,
+    deviceId: device.deviceId,
     tokenHash: sha256(token),
     createdAt: now,
     expiresAt: new Date(now.getTime() + IPAD_SESSION_MS),
@@ -157,6 +168,7 @@ export async function getIpadContext(): Promise<IpadContext | null> {
     isNewCustomer: !customer.intakeCompletedAt,
     serviceName: appointment.serviceName,
     startsAt: appointment.startsAt,
+    deviceId: session.deviceId,
   };
 }
 

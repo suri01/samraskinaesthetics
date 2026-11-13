@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { IpadDeviceManager } from "@/components/IpadDeviceManager";
 import { MfaSetupPanel } from "@/components/MfaSetupPanel";
 import { StaffShell } from "@/components/StaffShell";
 import { db } from "@/db";
@@ -15,15 +16,22 @@ export default async function SettingsPage() {
     .limit(1);
   const staff = await db.select().from(staffUsers).where(eq(staffUsers.clinicId, ctx.clinicId));
   const me = staff.find((s) => s.id === ctx.staffUserId);
+  const canManageIpads = ctx.role === "owner" || ctx.role === "receptionist";
 
   return (
     <StaffShell>
       <h1 className="page-title">Settings</h1>
       <p className="page-lede">
-        Scaffolding for roles, consent, retention, and MFA. UK GDPR / medical-record items need
-        adviser review — not claimed as compliant by this software.
+        Scaffolding for roles, consent, retention, MFA, and clinic iPad passkeys. UK GDPR /
+        medical-record items need adviser review — not claimed as compliant by this software.
       </p>
       <div className="stack">
+        {canManageIpads ? (
+          <div className="panel">
+            <IpadDeviceManager />
+          </div>
+        ) : null}
+
         <div className="panel stack">
           <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>Your MFA</h2>
           <p className="muted" style={{ margin: 0 }}>

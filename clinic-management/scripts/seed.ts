@@ -14,12 +14,17 @@ import {
   formSubmissions,
   formTemplates,
   invoices,
+  ipadDeviceRegistrations,
+  ipadDeviceSessions,
+  ipadDevices,
+  ipadSessions,
   messageOutbox,
   payments,
   photos,
   staffUsers,
   tasks,
   treatmentRecords,
+  webauthnChallenges,
 } from "../src/db/schema";
 import { encryptSecret, hashPassword } from "../src/lib/crypto";
 
@@ -37,6 +42,11 @@ async function main() {
   await db.delete(formSubmissions);
   await db.delete(formTemplates);
   await db.delete(tasks);
+  await db.delete(ipadSessions);
+  await db.delete(ipadDeviceSessions);
+  await db.delete(webauthnChallenges);
+  await db.delete(ipadDevices);
+  await db.delete(ipadDeviceRegistrations);
   await db.delete(appointments);
   await db.delete(customers);
   await db.delete(staffUsers);
