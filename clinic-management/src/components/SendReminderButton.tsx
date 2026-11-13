@@ -15,10 +15,18 @@ export function SendReminderButton({ appointmentId }: { appointmentId: string })
     const data = await res.json().catch(() => ({}));
     setBusy(false);
     if (!res.ok) {
-      setError(data.error ?? "Failed");
+      setError(data.error ?? (data.status === "failed" ? "WhatsApp send failed" : "Failed"));
       return;
     }
-    setMsg(data.mocked ? "Reminder saved to the outbox." : "Reminder queued to send.");
+    if (data.mocked) {
+      setMsg(
+        data.status === "skipped_no_opt_in"
+          ? "Skipped — customer has not opted in to WhatsApp reminders."
+          : "Reminder saved to the outbox (mock mode).",
+      );
+      return;
+    }
+    setMsg(data.status === "sent" ? "WhatsApp reminder sent." : `Reminder status: ${data.status}`);
   }
 
   return (

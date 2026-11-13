@@ -29,6 +29,9 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
       serviceName: row.appointment.serviceName,
       whatsappOptIn: row.customer.whatsappOptIn,
     });
+    if (result.status === "failed") {
+      return NextResponse.json(result, { status: 502 });
+    }
     return NextResponse.json(result);
   } catch (e) {
     const err = e as AuthError;

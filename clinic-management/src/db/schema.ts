@@ -525,6 +525,16 @@ export const clinicSettings = pgTable("clinic_settings", {
       finance: ["customers", "invoices", "payments"],
     }),
   consentTemplate: text("consent_template").notNull().default(""),
+  /** WhatsApp Business channel — credentials encrypted at rest when stored. */
+  whatsappEnabled: boolean("whatsapp_enabled").notNull().default(false),
+  whatsappProvider: text("whatsapp_provider").notNull().default("mocked"),
+  whatsappPhoneNumberId: text("whatsapp_phone_number_id"),
+  whatsappAccessTokenEnc: text("whatsapp_access_token_enc"),
+  whatsappTemplateName: text("whatsapp_template_name"),
+  whatsappTemplateLanguage: text("whatsapp_template_language").default("en_GB"),
+  twilioAccountSid: text("twilio_account_sid"),
+  twilioAuthTokenEnc: text("twilio_auth_token_enc"),
+  twilioWhatsappFrom: text("twilio_whatsapp_from"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
 

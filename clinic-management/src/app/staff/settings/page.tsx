@@ -3,11 +3,13 @@ import { IpadDeviceManager } from "@/components/IpadDeviceManager";
 import { MfaSetupPanel } from "@/components/MfaSetupPanel";
 import { StaffShell } from "@/components/StaffShell";
 import { TreatmentMenuPanel } from "@/components/TreatmentMenuPanel";
+import { WhatsAppSettingsPanel } from "@/components/WhatsAppSettingsPanel";
 import { db } from "@/db";
 import { clinicSettings, staffUsers } from "@/db/schema";
 import { requireStaffPage } from "@/lib/auth/staff";
 import { ROLE_PERMISSIONS, isAdmin, roleCan } from "@/lib/constants";
 import { listClinicTreatments } from "@/lib/treatments";
+import { loadWhatsAppConfig, publicWhatsAppStatus } from "@/lib/whatsapp";
 
 export default async function SettingsPage() {
   const ctx = await requireStaffPage();
@@ -21,14 +23,21 @@ export default async function SettingsPage() {
   const treatments = await listClinicTreatments(ctx.clinicId, { includeInactive: true });
   const canEditTreatments =
     isAdmin(ctx.role) || roleCan(ctx.role, "appointments") || roleCan(ctx.role, "treatments");
+  const whatsapp = publicWhatsAppStatus(await loadWhatsAppConfig(ctx.clinicId));
 
   return (
     <StaffShell>
       <h1 className="page-title">Settings</h1>
-      <p className="page-lede">Clinic security, staff access, treatments, and registered iPads.</p>
+      <p className="page-lede">
+        Clinic security, staff access, treatments, messaging, and registered iPads.
+      </p>
       <div className="stack">
         <div className="panel">
           <TreatmentMenuPanel initialItems={treatments} canEdit={canEditTreatments} />
+        </div>
+
+        <div className="panel" id="whatsapp">
+          <WhatsAppSettingsPanel initial={whatsapp} canEdit={isAdmin(ctx.role)} />
         </div>
 
         {isAdmin(ctx.role) ? (
