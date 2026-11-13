@@ -75,9 +75,7 @@ a {
 }
 
 .brand-mark {
-  display: grid;
-  justify-items: center;
-  gap: 0.55rem;
+  display: block;
   line-height: 0;
   background: transparent;
 }
@@ -86,32 +84,12 @@ a {
   display: block;
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 12px 28px rgba(26, 33, 28, 0.12));
-}
-
-.brand-mark__tagline {
-  display: block;
-  margin: 0;
-  font-family: var(--font-body), Georgia, serif;
-  font-size: 0.68rem;
-  font-weight: 500;
-  letter-spacing: 0.34em;
-  text-indent: 0.34em;
-  text-transform: uppercase;
-  color: var(--gold);
-  line-height: 1.2;
-  white-space: nowrap;
+  filter: drop-shadow(0 14px 30px rgba(26, 33, 28, 0.14));
 }
 
 .brand-mark--gate {
-  width: min(16.5rem, 70vw);
+  width: min(17.5rem, 74vw);
   margin-inline: auto;
-}
-
-.brand-mark--gate .brand-mark__tagline {
-  font-size: clamp(0.62rem, 1.7vw, 0.72rem);
-  letter-spacing: 0.36em;
-  text-indent: 0.36em;
 }
 
 .brand-mark--rail {
@@ -123,30 +101,12 @@ a {
   filter: drop-shadow(0 6px 14px rgba(26, 33, 28, 0.1));
 }
 
-.brand-mark--rail .brand-mark__tagline {
-  font-size: 0.52rem;
-  letter-spacing: 0.22em;
-  text-indent: 0.22em;
-}
-
 .brand-mark--masthead {
   width: min(14rem, 55vw);
 }
 
 .brand-mark--masthead .brand-mark__img {
   filter: drop-shadow(0 8px 18px rgba(26, 33, 28, 0.1));
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 /* —— Gate compositions (home / login / iPad entry) —— */
