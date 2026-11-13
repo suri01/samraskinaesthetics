@@ -18,11 +18,7 @@ export function CollectPaymentButton({ invoiceId }: { invoiceId: string }) {
       setError(data.error ?? "Payment failed");
       return;
     }
-    setMsg(
-      data.mocked
-        ? `Mock payment recorded (${data.providerRef}). No card data stored.`
-        : `Stripe PaymentIntent ${data.providerRef} created.`,
-    );
+    setMsg(data.mocked ? "Payment recorded." : "Payment started with Stripe.");
   }
 
   return (

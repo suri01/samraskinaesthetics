@@ -18,7 +18,7 @@ export default async function InvoicesPage() {
   return (
     <StaffShell>
       <h1 className="page-title">Invoices</h1>
-      <p className="page-lede">GBP amounts · Stripe mocked unless test keys are set.</p>
+      <p className="page-lede">Invoices and payments in GBP.</p>
       <div className="panel">
         <table className="table">
           <thead>

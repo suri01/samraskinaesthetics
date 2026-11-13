@@ -17,7 +17,7 @@ export default async function TreatmentsPage() {
   return (
     <StaffShell>
       <h1 className="page-title">Treatment records</h1>
-      <p className="page-lede">Clinical notes for completed / in-progress visits (sample).</p>
+      <p className="page-lede">Clinical notes for completed and in-progress visits.</p>
       <div className="panel">
         <table className="table">
           <thead>

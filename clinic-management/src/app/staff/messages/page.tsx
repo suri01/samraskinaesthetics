@@ -3,7 +3,6 @@ import { StaffShell } from "@/components/StaffShell";
 import { db } from "@/db";
 import { messageOutbox } from "@/db/schema";
 import { requireStaffPage } from "@/lib/auth/staff";
-import { whatsappMode } from "@/lib/whatsapp";
 
 export default async function MessagesPage() {
   const ctx = await requireStaffPage("messages");
@@ -17,10 +16,7 @@ export default async function MessagesPage() {
   return (
     <StaffShell>
       <h1 className="page-title">Messages</h1>
-      <p className="page-lede">
-        WhatsApp outbox · mode <span className="badge badge--mock">{whatsappMode()}</span>. Previews
-        never include clinical detail.
-      </p>
+      <p className="page-lede">Appointment reminders and customer messages.</p>
       <div className="panel">
         <table className="table">
           <thead>
@@ -38,8 +34,7 @@ export default async function MessagesPage() {
                 <td>{m.toAddress}</td>
                 <td>{m.preview}</td>
                 <td>
-                  <span className="badge">{m.status}</span>{" "}
-                  {m.mocked ? <span className="badge badge--mock">mocked</span> : null}
+                  <span className="badge">{m.status}</span>
                 </td>
               </tr>
             ))}

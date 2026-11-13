@@ -16,7 +16,7 @@ export default async function CustomersPage() {
   return (
     <StaffShell>
       <h1 className="page-title">Customers</h1>
-      <p className="page-lede">Fictional sample records only.</p>
+      <p className="page-lede">Customer profiles and visit history.</p>
       <div className="panel">
         <table className="table">
           <thead>

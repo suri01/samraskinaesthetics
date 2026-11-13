@@ -18,11 +18,7 @@ export function SendReminderButton({ appointmentId }: { appointmentId: string })
       setError(data.error ?? "Failed");
       return;
     }
-    setMsg(
-      data.mocked
-        ? `Mocked (${data.status}) — nothing sent. Preview logged without clinical detail.`
-        : `Queued (${data.status}).`,
-    );
+    setMsg(data.mocked ? "Reminder saved to the outbox." : "Reminder queued to send.");
   }
 
   return (

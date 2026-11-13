@@ -52,7 +52,7 @@ export default async function StaffDashboardPage() {
   return (
     <StaffShell>
       <h1 className="page-title">Dashboard</h1>
-      <p className="page-lede">Today at Samra Skin & Aesthetics (sample data).</p>
+      <p className="page-lede">Today at Samra Skin &amp; Aesthetics.</p>
       <div className="grid-cards">
         <div className="panel stat">
           <strong>{apptToday?.c ?? 0}</strong>

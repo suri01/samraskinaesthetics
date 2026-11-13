@@ -281,7 +281,7 @@ export function IpadCustomerFlow(props: {
         <section className="stack">
           <h2 className="ipad-step-title">Medical history</h2>
           <p className="muted" style={{ margin: 0 }}>
-            Required for new customers before treatment. Sample clinic use only.
+            Required for new customers before treatment.
           </p>
           <div className="field">
             <label htmlFor="gp">GP / clinic name</label>

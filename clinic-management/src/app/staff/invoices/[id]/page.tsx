@@ -7,7 +7,6 @@ import { db } from "@/db";
 import { customers, invoices, payments } from "@/db/schema";
 import { requireStaffPage } from "@/lib/auth/staff";
 import { formatGbp } from "@/lib/money";
-import { stripeMode } from "@/lib/stripe";
 
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -30,8 +29,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
       <h1 className="page-title">{row.invoice.number}</h1>
       <p className="page-lede">
         {row.customer.firstName} {row.customer.lastName} · {formatGbp(row.invoice.totalPence)} ·{" "}
-        <span className="badge">{row.invoice.status}</span> · Stripe mode{" "}
-        <span className="badge badge--mock">{stripeMode()}</span>
+        <span className="badge">{row.invoice.status}</span>
       </p>
       <div className="stack">
         <div className="panel">
@@ -57,9 +55,6 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         {row.invoice.status === "open" ? (
           <div className="panel stack">
             <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>Payment</h2>
-            <p className="muted" style={{ margin: 0 }}>
-              Never stores PAN/CVC. Mock path records a succeeded payment locally.
-            </p>
             <CollectPaymentButton invoiceId={row.invoice.id} />
           </div>
         ) : null}
@@ -73,9 +68,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                   <td>
                     <span className="badge">{p.status}</span>
                   </td>
-                  <td>
-                    {p.provider} {p.mocked ? <span className="badge badge--mock">mocked</span> : null}
-                  </td>
+                  <td className="muted">{p.provider}</td>
                   <td className="muted">{p.providerRef}</td>
                 </tr>
               ))}

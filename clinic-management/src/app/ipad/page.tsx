@@ -19,8 +19,7 @@ export default async function IpadEntryPage() {
           <>
             <h1>Authenticate this device</h1>
             <p className="muted">
-              Like a mobile app signing the device in: use the clinic passkey (Face ID / Touch ID) so
-              backend access stays limited to registered iPads.
+              Use Face ID or Touch ID to unlock this registered clinic iPad.
             </p>
             <IpadPasskeyUnlock />
             <div className="panel stack" style={{ background: "rgba(255,255,255,0.5)" }}>
@@ -39,9 +38,8 @@ export default async function IpadEntryPage() {
           <>
             <h1>Hand over to customer</h1>
             <p className="muted">
-              Device <strong>{device.deviceName}</strong> is trusted. When you hand the iPad over,
-              ask the customer to enter the passcode you generate in clinic management — that opens{" "}
-              <em>only their</em> profile.
+              <strong>{device.deviceName}</strong> is ready. Enter the visit passcode from the
+              appointment to open this customer&apos;s forms.
             </p>
             <IpadUnlockForm />
           </>

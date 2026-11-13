@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 
 export function LoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState("practitioner@samra.demo");
-  const [password, setPassword] = useState("ClinicDemo2026!");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [totpCode, setTotpCode] = useState("");
   const [needsMfa, setNeedsMfa] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,10 +76,6 @@ export function LoginForm() {
       <button className="btn btn--primary" type="submit" disabled={busy}>
         {busy ? "Signing in…" : needsMfa ? "Verify & sign in" : "Sign in"}
       </button>
-      <p className="muted" style={{ fontSize: "0.85rem", margin: 0 }}>
-        Sample: practitioner@samra.demo / ClinicDemo2026! (no MFA). Admin (iPad registration) is
-        admin@samra.demo with TOTP from seed output.
-      </p>
     </form>
   );
 }

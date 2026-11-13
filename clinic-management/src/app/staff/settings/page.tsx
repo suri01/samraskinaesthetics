@@ -20,10 +20,7 @@ export default async function SettingsPage() {
   return (
     <StaffShell>
       <h1 className="page-title">Settings</h1>
-      <p className="page-lede">
-        Scaffolding for roles, consent, retention, MFA, and clinic iPad passkeys. UK GDPR /
-        medical-record items need adviser review — not claimed as compliant by this software.
-      </p>
+      <p className="page-lede">Clinic security, staff access, consent, and registered iPads.</p>
       <div className="stack">
         {isAdmin(ctx.role) ? (
           <div className="panel" id="ipad-devices">
@@ -32,17 +29,19 @@ export default async function SettingsPage() {
         ) : (
           <div className="panel stack" id="ipad-devices">
             <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>
-              Registered iPads (passkeys)
+              Registered iPads
             </h2>
             <p className="muted" style={{ margin: 0 }}>
-              iPad registration is an admin setting. Sign in as <strong>admin@samra.demo</strong> to
-              create a setup code.
+              Only admins can register or disable clinic iPads. Ask an admin if you need a setup
+              code.
             </p>
           </div>
         )}
 
         <div className="panel stack">
-          <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>Your MFA</h2>
+          <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>
+            Two-factor authentication
+          </h2>
           <p className="muted" style={{ margin: 0 }}>
             Status: {me?.totpEnabled ? "enabled" : "not enabled"}
           </p>
@@ -55,7 +54,7 @@ export default async function SettingsPage() {
             <thead>
               <tr>
                 <th>Role</th>
-                <th>Permissions (v1)</th>
+                <th>Permissions</th>
               </tr>
             </thead>
             <tbody>
@@ -76,7 +75,6 @@ export default async function SettingsPage() {
               </li>
             ))}
           </ul>
-          <p className="muted">Invite / disable flows: API scaffolding in place; UI polish later.</p>
         </div>
 
         <div className="panel stack">
@@ -88,14 +86,11 @@ export default async function SettingsPage() {
 
         <div className="panel stack">
           <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>
-            Retention hooks
+            Retention &amp; sessions
           </h2>
           <p style={{ margin: 0 }}>
-            Clinical: {settings?.retentionYearsClinical ?? 8} years · Finance:{" "}
+            Clinical records: {settings?.retentionYearsClinical ?? 8} years · Finance:{" "}
             {settings?.retentionYearsFinance ?? 7} years
-          </p>
-          <p className="muted" style={{ margin: 0 }}>
-            Jobs can mark eligible records; no auto-delete without confirmation (stub).
           </p>
           <p style={{ margin: 0 }}>
             Idle lock: {settings?.idleLockMinutes ?? 15} min · Max session:{" "}

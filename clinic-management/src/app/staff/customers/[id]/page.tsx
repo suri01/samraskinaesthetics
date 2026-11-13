@@ -137,7 +137,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
             {photoRows.map((p) => (
               <li key={p.id}>
                 {p.stage}: {p.caption ?? p.storageKey}{" "}
-                <span className="badge badge--mock">{p.contentType}</span>
+                <span className="badge">{p.contentType}</span>
               </li>
             ))}
           </ul>

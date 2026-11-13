@@ -233,14 +233,13 @@ export function IpadCameraCapture(props: {
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>Photos</h2>
         {resolution ? (
-          <span className="badge badge--mock">{resolution}</span>
+          <span className="badge badge--gold">{resolution}</span>
         ) : (
-          <span className="badge badge--gold">Highest quality</span>
+          <span className="badge badge--gold">Camera</span>
         )}
       </div>
       <p className="muted" style={{ margin: 0 }}>
-        Capture photos for this appointment only. Live capture uses max available resolution and
-        JPEG quality 1.0; “Device camera” opens the iPad camera app for a full-resolution still.
+        Capture photos for this visit. Use live capture or the device camera for a still.
       </p>
 
       <div className="field">
