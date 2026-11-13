@@ -1,4 +1,4 @@
-import { BrandLogo } from "@/components/BrandLogo";
+import { GateShell } from "@/components/GateShell";
 import { IpadPasskeyRegister } from "@/components/IpadPasskeyRegister";
 
 export default async function IpadRegisterPage({
@@ -10,14 +10,12 @@ export default async function IpadRegisterPage({
   const token = params.token?.trim() ?? "";
 
   return (
-    <main className="ipad-shell">
-      <div className="ipad-card stack">
-        <div style={{ textAlign: "center" }}>
-          <BrandLogo href={null} size="card" priority />
-          <p className="badge badge--gold">iPad registration</p>
-        </div>
-        <IpadPasskeyRegister initialToken={token} />
-      </div>
-    </main>
+    <GateShell eyebrow="iPad registration" logoHref="/ipad" wide>
+      <h1>Register this iPad</h1>
+      <p className="gate__lede">
+        Enter the one-time setup code from an admin, then create this device&apos;s passkey.
+      </p>
+      <IpadPasskeyRegister initialToken={token} />
+    </GateShell>
   );
 }

@@ -1,19 +1,14 @@
 import Link from "next/link";
-import { BrandLogo } from "@/components/BrandLogo";
-import { BRAND } from "@/lib/constants";
+import { GateShell } from "@/components/GateShell";
 
 export default function HomePage() {
   return (
-    <main className="shell" style={{ padding: "4rem 0" }}>
-      <BrandLogo href={null} size="hero" priority />
-      <p className="badge badge--gold">Clinic management</p>
-      <h1 className="page-title" style={{ marginTop: "1rem" }}>
-        {BRAND.name}
-      </h1>
-      <p className="page-lede">
-        Appointments, customers, iPad intake, treatments, photos, and invoices.
+    <GateShell eyebrow="Clinic management" logoHref={null}>
+      <h1>Welcome</h1>
+      <p className="gate__lede">
+        Appointments, customers, iPad intake, treatments, and invoices — in one calm workspace.
       </p>
-      <div className="row" style={{ marginBottom: "2rem" }}>
+      <div className="gate__actions">
         <Link className="btn btn--primary" href="/staff/login">
           Staff sign in
         </Link>
@@ -21,6 +16,6 @@ export default function HomePage() {
           Customer iPad
         </Link>
       </div>
-    </main>
+    </GateShell>
   );
 }

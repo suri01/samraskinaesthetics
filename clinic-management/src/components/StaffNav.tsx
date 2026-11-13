@@ -22,27 +22,31 @@ export function StaffNav({ staffName, role }: { staffName: string; role: string 
 
   return (
     <aside className="staff-nav">
-      <div className="staff-nav__brand-wrap">
-        <BrandLogo href="/staff" size="nav" />
+      <div className="staff-nav__brand">
+        <BrandLogo href="/staff" placement="rail" />
+        <p className="staff-nav__sub">Clinic</p>
       </div>
-      <p className="staff-nav__sub">Clinic</p>
-      <ul>
-        {links.map((l) => {
-          const active = l.exact ? pathname === l.href : pathname.startsWith(l.href);
-          return (
-            <li key={l.href}>
-              <Link href={l.href} className={active ? "is-active" : undefined}>
-                {l.label}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-      <div style={{ marginTop: "1.5rem" }} className="muted">
-        <div>{staffName}</div>
-        <div style={{ textTransform: "capitalize", fontSize: "0.85rem" }}>{role}</div>
-        <form action="/api/auth/logout" method="post" style={{ marginTop: "0.75rem" }}>
-          <button className="btn btn--ghost" type="submit">
+      <nav className="staff-nav__links" aria-label="Staff">
+        <ul>
+          {links.map((l) => {
+            const active = l.exact ? pathname === l.href : pathname.startsWith(l.href);
+            return (
+              <li key={l.href}>
+                <Link href={l.href} className={active ? "is-active" : undefined}>
+                  {l.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+      <div className="staff-nav__footer">
+        <div className="staff-nav__who">
+          <strong>{staffName}</strong>
+          <span>{role}</span>
+        </div>
+        <form action="/api/auth/logout" method="post">
+          <button className="btn btn--ghost btn--nav" type="submit">
             Sign out
           </button>
         </form>

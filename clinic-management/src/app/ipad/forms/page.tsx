@@ -21,7 +21,12 @@ export default async function IpadFormsPage() {
 
   return (
     <main className="ipad-shell">
-      <div className="ipad-card stack" style={{ width: "min(680px, 100%)" }}>
+      <div className="ipad-card stack" style={{ width: "min(680px, 100%)", overflow: "hidden", padding: 0 }}>
+        <div className="ipad-card__brand-rail" aria-hidden>
+          <span>Samra</span>
+          <span>Check-in</span>
+        </div>
+        <div className="stack" style={{ padding: "1.5rem 1.75rem 1.75rem" }}>
         <p className="badge badge--gold">Customer check-in</p>
         <h1>{ctx.isNewCustomer ? `Welcome, ${ctx.firstName || "there"}` : `Welcome back, ${ctx.firstName}`}</h1>
         <p className="muted">
@@ -63,6 +68,7 @@ export default async function IpadFormsPage() {
             emergencyPhone: mh.emergencyPhone ?? "",
           }}
         />
+        </div>
       </div>
     </main>
   );

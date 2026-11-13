@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { BrandLogo } from "@/components/BrandLogo";
+import { GateShell } from "@/components/GateShell";
 
 export function IdleLockGate({ name }: { name: string }) {
   const router = useRouter();
@@ -30,42 +30,36 @@ export function IdleLockGate({ name }: { name: string }) {
   }
 
   return (
-    <main className="ipad-shell">
-      <div className="ipad-card stack">
-        <div style={{ textAlign: "center" }}>
-          <BrandLogo href={null} size="card" />
+    <GateShell eyebrow="Session locked" logoHref={null}>
+      <h1>Welcome back, {name.split(" ")[0]}</h1>
+      <p className="gate__lede">Idle for 15 minutes. Re-enter your password to continue.</p>
+      <form className="stack" onSubmit={onSubmit}>
+        <div className="field">
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </div>
-        <p className="badge">Session locked</p>
-        <h1>Welcome back, {name.split(" ")[0]}</h1>
-        <p className="muted">Idle for 15 minutes. Re-enter your password to continue.</p>
-        <form className="stack" onSubmit={onSubmit}>
-          <div className="field">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="totp">Authenticator code (if MFA enabled)</label>
-            <input
-              id="totp"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              value={totpCode}
-              onChange={(e) => setTotpCode(e.target.value)}
-            />
-          </div>
-          {error ? <p className="error">{error}</p> : null}
-          <button className="btn btn--primary" type="submit" disabled={busy}>
-            {busy ? "Unlocking…" : "Unlock"}
-          </button>
-        </form>
-      </div>
-    </main>
+        <div className="field">
+          <label htmlFor="totp">Authenticator code (if MFA enabled)</label>
+          <input
+            id="totp"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            value={totpCode}
+            onChange={(e) => setTotpCode(e.target.value)}
+          />
+        </div>
+        {error ? <p className="error">{error}</p> : null}
+        <button className="btn btn--primary" type="submit" disabled={busy}>
+          {busy ? "Unlocking…" : "Unlock"}
+        </button>
+      </form>
+    </GateShell>
   );
 }
