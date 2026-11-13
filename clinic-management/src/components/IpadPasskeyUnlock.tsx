@@ -13,13 +13,17 @@ export function IpadPasskeyUnlock() {
     setBusy(true);
     setError(null);
     try {
-      const optRes = await fetch("/api/ipad/webauthn/auth/options", { method: "POST" });
+      const optRes = await fetch("/api/ipad/webauthn/auth/options", {
+        method: "POST",
+        credentials: "same-origin",
+      });
       const optData = await optRes.json().catch(() => ({}));
       if (!optRes.ok) throw new Error(optData.error ?? "Could not start passkey unlock");
 
       const assertion = await startAuthentication({ optionsJSON: optData.options });
       const verifyRes = await fetch("/api/ipad/webauthn/auth/verify", {
         method: "POST",
+        credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ response: assertion }),
       });

@@ -27,6 +27,7 @@ export function IpadPasskeyRegister({ initialToken = "" }: { initialToken?: stri
 
       const optRes = await fetch("/api/ipad/webauthn/register/options", {
         method: "POST",
+        credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
@@ -37,6 +38,7 @@ export function IpadPasskeyRegister({ initialToken = "" }: { initialToken?: stri
       const credential = await startRegistration({ optionsJSON: optData.options });
       const verifyRes = await fetch("/api/ipad/webauthn/register/verify", {
         method: "POST",
+        credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...payload, response: credential }),
       });

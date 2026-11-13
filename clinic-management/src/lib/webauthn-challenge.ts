@@ -12,8 +12,10 @@ function challengeCookieOptions(maxAgeSeconds: number) {
   return {
     httpOnly: true,
     secure,
-    sameSite: "strict" as const,
-    path: "/ipad",
+    // Lax so the cookie survives the OS passkey sheet returning to the page.
+    // Path must cover /api/ipad/* (options + verify) — "/ipad" alone does not.
+    sameSite: "lax" as const,
+    path: "/",
     maxAge: maxAgeSeconds,
   };
 }
