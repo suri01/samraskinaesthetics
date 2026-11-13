@@ -1,34 +1,29 @@
 import Link from "next/link";
-import Image from "next/image";
+import { GateShell } from "@/components/GateShell";
 
 /**
- * Public home — pixel-match docs/brand-samples/welcome-screen-target.jpg
- * with hotspots over the two CTA buttons.
+ * Public welcome — real HTML composition matching welcome-screen-target:
+ * floating gold lockup, serif headline, lede, and pill CTAs (no full-bleed image hotspots).
  */
 export default function HomePage() {
   return (
-    <main className="welcome-target">
-      <div className="welcome-target__stage">
-        <Image
-          src="/brand/welcome-screen-target.jpg"
-          alt="Samra Skin & Aesthetics — Thoughtful skin care, quietly refined."
-          width={864}
-          height={1152}
-          priority
-          unoptimized
-          className="welcome-target__art"
-        />
-        <Link
-          href="/staff/login"
-          className="welcome-target__hit welcome-target__hit--staff"
-          aria-label="Staff sign in"
-        />
-        <Link
-          href="/ipad"
-          className="welcome-target__hit welcome-target__hit--checkin"
-          aria-label="Clinic check-in"
-        />
+    <GateShell variant="open" logoHref={null}>
+      <h1>
+        Thoughtful skin
+        <br />
+        care, quietly refined.
+      </h1>
+      <p className="gate__lede">
+        Experience tranquility and expert care tailored to your skin&apos;s natural beauty.
+      </p>
+      <div className="gate__actions">
+        <Link className="btn btn--primary" href="/staff/login">
+          Staff sign in
+        </Link>
+        <Link className="btn btn--ghost" href="/ipad">
+          Clinic check-in
+        </Link>
       </div>
-    </main>
+    </GateShell>
   );
 }

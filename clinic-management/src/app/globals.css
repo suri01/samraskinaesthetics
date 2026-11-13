@@ -57,54 +57,6 @@ body {
   min-height: 100vh;
 }
 
-/* —— Public welcome: exact welcome-screen-target art + CTA hotspots —— */
-.welcome-target {
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: grid;
-  place-items: center;
-  /* Match the mock’s champagne→sage field so letterboxing blends */
-  background: linear-gradient(152deg, #eddccc 0%, #e7ddd2 34%, #d5ddd4 68%, #c5d0c4 100%);
-  padding: 0;
-}
-
-.welcome-target__stage {
-  position: relative;
-  width: min(100vw, calc(100dvh * 864 / 1152));
-  max-width: 28rem;
-  line-height: 0;
-  animation: gate-in 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.welcome-target__art {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.welcome-target__hit {
-  position: absolute;
-  /* Calibrated to welcome-screen-target.jpg button pills */
-  top: 83.25%;
-  height: 4.6%;
-  border-radius: 999px;
-}
-
-.welcome-target__hit--staff {
-  left: 18.3%;
-  width: 31.1%;
-}
-
-.welcome-target__hit--checkin {
-  left: 52.9%;
-  width: 31.1%;
-}
-
-.welcome-target__hit:focus-visible {
-  outline: 2px solid var(--moss);
-  outline-offset: 3px;
-}
-
 a {
   color: inherit;
   text-decoration: none;
@@ -165,7 +117,13 @@ a {
 }
 
 .gate--open {
-  padding-block: clamp(2rem, 8vh, 4.5rem);
+  /* Match welcome-screen-target: one calm vertical composition */
+  min-height: 100vh;
+  min-height: 100dvh;
+  align-content: center;
+  place-items: center;
+  padding-block: clamp(1.75rem, 6vh, 3.25rem) clamp(2rem, 8vh, 4rem);
+  padding-inline: 1.25rem;
 }
 
 .gate__frame {
@@ -184,12 +142,15 @@ a {
 }
 
 .gate__frame--open {
-  width: min(34rem, 100%);
+  width: min(26rem, 100%);
   border: none;
   box-shadow: none;
   background: transparent;
   backdrop-filter: none;
   overflow: visible;
+  display: grid;
+  justify-items: center;
+  gap: 0;
 }
 
 .gate__brand {
@@ -199,11 +160,16 @@ a {
 }
 
 .gate__frame--open .gate__brand {
-  padding: 0 1rem 1.5rem;
+  padding: 0 0.5rem 1.35rem;
 }
 
 .gate__frame--open .brand-mark--gate {
-  width: min(18rem, 78vw);
+  /* Floating cutout — sized like the target mock lockup */
+  width: min(16.75rem, 72vw);
+}
+
+.gate__frame--open .brand-mark__img {
+  filter: drop-shadow(0 18px 36px rgba(26, 33, 28, 0.16));
 }
 
 .gate__eyebrow {
@@ -222,10 +188,11 @@ a {
 }
 
 .gate__frame--open .gate__body {
-  padding: 0.35rem 1.25rem 0;
+  padding: 0.15rem 0.25rem 0;
   justify-items: center;
   text-align: center;
-  gap: 1.1rem;
+  gap: 1rem;
+  width: 100%;
 }
 
 .gate__body h1 {
@@ -235,11 +202,16 @@ a {
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.15;
+  color: var(--moss);
 }
 
 .gate__frame--open .gate__body h1 {
-  font-size: clamp(1.85rem, 4.6vw, 2.45rem);
-  max-width: 16ch;
+  font-size: clamp(1.9rem, 5vw, 2.35rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+  max-width: 14ch;
+  color: #24312a;
 }
 
 .gate__lede {
@@ -250,8 +222,10 @@ a {
 }
 
 .gate__frame--open .gate__lede {
-  max-width: 38ch;
-  font-size: 1.02rem;
+  max-width: 34ch;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: rgba(36, 49, 42, 0.72);
 }
 
 .gate__actions {
@@ -263,8 +237,28 @@ a {
 
 .gate__frame--open .gate__actions {
   justify-content: center;
-  margin-top: 0.75rem;
-  gap: 0.85rem;
+  margin-top: 1.35rem;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.gate__frame--open .gate__actions .btn {
+  min-width: 9.5rem;
+  min-height: 2.85rem;
+  padding-inline: 1.35rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.gate__frame--open .btn--primary {
+  background: #2b3a31;
+  color: #f7f5f1;
+}
+
+.gate__frame--open .btn--ghost {
+  background: rgba(255, 252, 248, 0.55);
+  border-color: rgba(43, 58, 49, 0.32);
+  color: #2b3a31;
 }
 
 @keyframes gate-in {
