@@ -139,13 +139,25 @@ export type MedicalHistory = {
   pregnantBreastfeeding?: string;
   smoking?: string;
   skinGoals?: string;
+  desiredResults?: string;
   emergencyName?: string;
   emergencyPhone?: string;
   receivingTreatment?: unknown;
   precautions?: unknown;
+  pastHistory?: string;
+  /** Staff-completed sun / lifestyle answers */
+  sunLifestyle?: Record<string, { answer?: string; comments?: string }>;
+  /** Staff-completed aesthetic history answers */
+  aestheticHistory?: Record<string, { answer?: string; comments?: string }>;
+  aestheticNotes?: {
+    adverseReactions?: string;
+    disappointingResults?: string;
+  };
   /** Full consultation journey payload from iPad */
   consultation?: unknown;
   aftercareAcknowledged?: boolean;
+  staffConsultationAt?: string;
+  staffConsultationBy?: string;
 };
 
 export const customers = pgTable(

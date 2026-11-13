@@ -24,8 +24,8 @@ export default async function IpadFormsPage() {
           Booked for <strong>{ctx.serviceName}</strong> ·{" "}
           {ctx.startsAt.toLocaleString("en-GB", { timeZone: "Europe/London" })}.
           {ctx.isNewCustomer
-            ? " We’ll walk through consultation details, medical history, consent, and aftercare — one short screen at a time."
-            : " Quick update of your details, medical precautions, consent, and aftercare."}{" "}
+            ? " We’ll walk through your details, skin profile, photos, consent, and aftercare — one short screen at a time. Your clinician completes medical history in clinic."
+            : " Confirm your details, then consent and aftercare. Your clinician updates medical notes in clinic."}{" "}
           Take your time; you can go back if you need to.
         </p>
         <IpadCustomerFlow
@@ -45,13 +45,6 @@ export default async function IpadFormsPage() {
             emailOptIn: ctx.emailOptIn,
           }}
           initialMedical={{
-            medications: mh.medications ?? "",
-            allergies: mh.allergies ?? ctx.allergies ?? "",
-            conditions: mh.conditions ?? "",
-            previousTreatments: mh.previousTreatments ?? "",
-            pregnantBreastfeeding: mh.pregnantBreastfeeding ?? "",
-            smoking: mh.smoking ?? "",
-            skinGoals: mh.skinGoals ?? ctx.medicalNotes ?? "",
             emergencyName: mh.emergencyName ?? "",
             emergencyPhone: mh.emergencyPhone ?? "",
           }}

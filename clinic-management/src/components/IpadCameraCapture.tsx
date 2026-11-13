@@ -40,6 +40,60 @@ function getImageCapture(track: MediaStreamTrack): ImageCaptureLike | null {
   }
 }
 
+function londonStampLabel(when = new Date()): string {
+  // Europe/London wall clock for clinic records
+  return (
+    when.toLocaleString("en-GB", {
+      timeZone: "Europe/London",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    }) + " Europe/London"
+  );
+}
+
+async function stampImageBlob(source: Blob, label: string): Promise<Blob> {
+  const bitmap = await createImageBitmap(source);
+  const canvas = document.createElement("canvas");
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    bitmap.close();
+    throw new Error("Could not create canvas");
+  }
+  ctx.drawImage(bitmap, 0, 0);
+  bitmap.close();
+
+  const pad = Math.max(12, Math.round(canvas.width * 0.018));
+  const fontSize = Math.max(18, Math.round(canvas.width * 0.028));
+  ctx.font = `600 ${fontSize}px system-ui, -apple-system, sans-serif`;
+  const metrics = ctx.measureText(label);
+  const textH = fontSize * 1.35;
+  const boxW = metrics.width + pad * 2;
+  const boxH = textH + pad;
+  const x = pad;
+  const y = canvas.height - boxH - pad;
+
+  ctx.fillStyle = "rgba(18, 22, 20, 0.62)";
+  ctx.fillRect(x, y, boxW, boxH);
+  ctx.fillStyle = "#F7F5F1";
+  ctx.textBaseline = "middle";
+  ctx.fillText(label, x + pad, y + boxH / 2);
+
+  const type = source.type && source.type.startsWith("image/") ? source.type : "image/jpeg";
+  const quality = type === "image/jpeg" || type === "image/webp" ? 0.95 : undefined;
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, type === "image/png" ? "image/png" : "image/jpeg", quality),
+  );
+  if (!blob) throw new Error("Could not stamp photo");
+  return blob;
+}
+
 async function blobFromVideoFrame(video: HTMLVideoElement): Promise<Blob> {
   const width = video.videoWidth;
   const height = video.videoHeight;
@@ -169,13 +223,16 @@ export function IpadCameraCapture(props: {
     setError(null);
     setStatus(null);
     try {
-      const type = blob.type && blob.type.startsWith("image/") ? blob.type : "image/jpeg";
+      const stampedAt = new Date();
+      const stamp = londonStampLabel(stampedAt);
+      const stamped = await stampImageBlob(blob, stamp);
+      const type = stamped.type && stamped.type.startsWith("image/") ? stamped.type : "image/jpeg";
       const ext = type === "image/png" ? "png" : type === "image/webp" ? "webp" : "jpg";
-      const file = new File([blob], `ipad-${stage}-${Date.now()}.${ext}`, { type });
+      const file = new File([stamped], `ipad-${stage}-${Date.now()}.${ext}`, { type });
       const body = new FormData();
       body.set("file", file);
       body.set("stage", stage);
-      body.set("caption", `iPad ${source} · ${stage}`);
+      body.set("caption", `iPad ${source} · ${stage} · ${stamp}`);
 
       const res = await fetch("/api/ipad/photos", {
         method: "POST",
@@ -185,17 +242,19 @@ export function IpadCameraCapture(props: {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? "Upload failed");
 
-      const previewUrl = URL.createObjectURL(blob);
+      const previewUrl = URL.createObjectURL(stamped);
       setPhotos((prev) => [
         ...prev,
         {
           id: String(data.id),
           previewUrl,
           stage,
-          byteSize: Number(data.byteSize ?? blob.size),
+          byteSize: Number(data.byteSize ?? stamped.size),
         },
       ]);
-      setStatus(`Saved ${stage} photo (${Math.round((data.byteSize ?? blob.size) / 1024)} KB).`);
+      setStatus(
+        `Saved ${stage} photo with timestamp (${Math.round((data.byteSize ?? stamped.size) / 1024)} KB).`,
+      );
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed");
     } finally {

@@ -1,7 +1,13 @@
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { consentRecords, customers, formSubmissions, formTemplates } from "@/db/schema";
+import {
+  consentRecords,
+  customers,
+  formSubmissions,
+  formTemplates,
+  type MedicalHistory,
+} from "@/db/schema";
 import { writeAudit } from "@/lib/audit";
 import { completeIpadSession, requireIpad } from "@/lib/auth/ipad";
 import { AuthError } from "@/lib/auth/staff";
@@ -32,6 +38,23 @@ export async function POST(req: Request) {
     const chosen = catalogue.filter((o) => upsellSkus.includes(o.sku));
     const notedAt = new Date().toISOString();
 
+    const [existingCustomer] = await db
+      .select({ medicalHistoryJson: customers.medicalHistoryJson, allergies: customers.allergies, medicalNotes: customers.medicalNotes })
+      .from(customers)
+      .where(eq(customers.id, ctx.customerId))
+      .limit(1);
+    const existing = (existingCustomer?.medicalHistoryJson ?? {}) as MedicalHistory;
+
+    const nextHistory: MedicalHistory = {
+      ...existing,
+      emergencyName: String(medical.emergencyName ?? details.emergencyName ?? existing.emergencyName ?? ""),
+      emergencyPhone: String(
+        medical.emergencyPhone ?? details.emergencyPhone ?? existing.emergencyPhone ?? "",
+      ),
+      consultation,
+      aftercareAcknowledged: Boolean(body.aftercareAcknowledged),
+    };
+
     await db
       .update(customers)
       .set({
@@ -46,23 +69,10 @@ export async function POST(req: Request) {
           postcode: String(details.postcode ?? ""),
           country: "United Kingdom",
         },
-        allergies: medical.allergies ? String(medical.allergies) : null,
-        medicalNotes: medical.skinGoals ? String(medical.skinGoals) : null,
-        medicalHistoryJson: {
-          medications: String(medical.medications ?? ""),
-          allergies: String(medical.allergies ?? ""),
-          conditions: String(medical.conditions ?? ""),
-          previousTreatments: String(medical.previousTreatments ?? ""),
-          pregnantBreastfeeding: String(medical.pregnantBreastfeeding ?? ""),
-          smoking: String(medical.smoking ?? ""),
-          skinGoals: String(medical.skinGoals ?? ""),
-          emergencyName: String(medical.emergencyName ?? ""),
-          emergencyPhone: String(medical.emergencyPhone ?? ""),
-          receivingTreatment: medical.receivingTreatment ?? null,
-          precautions: medical.precautions ?? null,
-          consultation,
-          aftercareAcknowledged: Boolean(body.aftercareAcknowledged),
-        },
+        // Preserve clinician-owned medical fields; iPad no longer collects them.
+        allergies: existingCustomer?.allergies ?? null,
+        medicalNotes: existingCustomer?.medicalNotes ?? null,
+        medicalHistoryJson: nextHistory,
         whatsappOptIn: Boolean(details.whatsappOptIn),
         emailOptIn: Boolean(details.emailOptIn),
         intakeCompletedAt: new Date(),

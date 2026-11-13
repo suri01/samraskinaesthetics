@@ -47,8 +47,10 @@ export default async function AppointmentDetailPage({ params }: { params: Promis
             access on trusted hardware only). When you hand the iPad over, generate a passcode here —
             the customer enters it to open <strong>only their profile</strong>
             {!c.intakeCompletedAt
-              ? " (new-customer consultation: details, skin history, medical, photos, consent, aftercare, add-ons)."
-              : " (returning check-in: confirm details, medical update, consent, aftercare, add-ons)."}
+              ? " (new-customer iPad: details, skin profile, photos, consent, aftercare, add-ons)."
+              : " (returning iPad: confirm details, consent, aftercare, add-ons)."}{" "}
+            Skin goals, lifestyle/treatment history, and medical history are completed by staff on
+            the customer record.
           </p>
           <IssueIpadCodeButton appointmentId={a.id} />
         </div>
@@ -58,7 +60,9 @@ export default async function AppointmentDetailPage({ params }: { params: Promis
         </div>
         <div className="panel">
           <p>
-            <Link href={`/staff/customers/${c.id}`}>Open customer record</Link>
+            <Link href={`/staff/customers/${c.id}#patient-consultation`}>
+              Open patient consultation on customer record
+            </Link>
           </p>
           {a.notes ? <p>{a.notes}</p> : <p className="muted">No staff notes.</p>}
         </div>

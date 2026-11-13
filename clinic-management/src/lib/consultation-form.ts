@@ -89,14 +89,32 @@ export const SKIN_TYPE_OPTIONS = [
   "Blemish-prone / acne",
 ] as const;
 
-export const FITZPATRICK_OPTIONS: Array<{ id: string; title: string; blurb: string }> = [
-  { id: "1", title: "Type 1 · Very fair", blurb: "Always burns, cannot tan" },
-  { id: "2", title: "Type 2 · Fair", blurb: "Usually burns, sometimes tans" },
-  { id: "3", title: "Type 3 · Medium", blurb: "Sometimes burns, usually tans" },
-  { id: "4", title: "Type 4 · Olive", blurb: "Rarely burns, always tans" },
-  { id: "5", title: "Type 5 · Brown", blurb: "Never burns, always tans" },
-  { id: "6", title: "Type 6 · Black", blurb: "Never burns, always tans" },
+export const FITZPATRICK_OPTIONS: Array<{
+  id: string;
+  title: string;
+  blurb: string;
+  /** Approximate skin-tone swatch for UI */
+  tone: string;
+}> = [
+  { id: "1", title: "Type 1 · Very fair", blurb: "Always burns, cannot tan", tone: "#F6E2D3" },
+  { id: "2", title: "Type 2 · Fair", blurb: "Usually burns, sometimes tans", tone: "#E8C4A2" },
+  { id: "3", title: "Type 3 · Medium", blurb: "Sometimes burns, usually tans", tone: "#D0A074" },
+  { id: "4", title: "Type 4 · Olive", blurb: "Rarely burns, always tans", tone: "#A67B5B" },
+  { id: "5", title: "Type 5 · Brown", blurb: "Never burns, always tans", tone: "#8B5A2B" },
+  { id: "6", title: "Type 6 · Black", blurb: "Never burns, always tans", tone: "#3F2A1C" },
 ];
+
+export const SKIN_TYPE_VISUALS: Record<
+  (typeof SKIN_TYPE_OPTIONS)[number],
+  { className: string; hint: string }
+> = {
+  Normal: { className: "skin-type-icon--normal", hint: "Balanced" },
+  Oily: { className: "skin-type-icon--oily", hint: "Shine-prone" },
+  Dry: { className: "skin-type-icon--dry", hint: "Tight / flaky" },
+  Combination: { className: "skin-type-icon--combination", hint: "T-zone oil" },
+  Sensitive: { className: "skin-type-icon--sensitive", hint: "Easily reactive" },
+  "Blemish-prone / acne": { className: "skin-type-icon--blemish", hint: "Breakouts" },
+};
 
 export const SUN_LIFESTYLE_ITEMS: Array<{ id: string; label: string }> = [
   { id: "indoorOutdoor", label: "Mostly outdoor work / lifestyle" },
@@ -276,7 +294,6 @@ export function createEmptyConsultation(partial?: {
     emergencyName: string;
     emergencyPhone: string;
     pregnantBreastfeeding: string;
-    skinGoals: string;
   }>;
 }): ConsultationAnswers {
   const m = partial?.medicalExtras ?? {};
@@ -297,7 +314,7 @@ export function createEmptyConsultation(partial?: {
       ...partial?.details,
     },
     concerns: {
-      mainConcerns: m.skinGoals ?? "",
+      mainConcerns: "",
       desiredResults: "",
     },
     skinHealth: ynMap(SKIN_HEALTH_ITEMS),

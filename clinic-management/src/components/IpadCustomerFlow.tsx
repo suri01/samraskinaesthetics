@@ -3,16 +3,15 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IpadCameraCapture } from "@/components/IpadCameraCapture";
+import { YnList } from "@/components/YnControls";
 import {
-  AESTHETIC_HISTORY_ITEMS,
   AFTERCARE_SECTIONS,
   CONSENT_STATEMENTS,
   FITZPATRICK_OPTIONS,
-  MEDICAL_PRECAUTION_ITEMS,
   ROUTINE_ITEMS,
   SKIN_HEALTH_ITEMS,
   SKIN_TYPE_OPTIONS,
-  SUN_LIFESTYLE_ITEMS,
+  SKIN_TYPE_VISUALS,
   buildConsentBody,
   createEmptyConsultation,
   type ConsultationAnswers,
@@ -23,12 +22,9 @@ import type { UpsellOffer } from "@/lib/upsells";
 
 type Step =
   | "details"
-  | "concerns"
   | "skinHealth"
   | "routine"
   | "skinType"
-  | "history"
-  | "medical"
   | "photos"
   | "consent"
   | "aftercare"
@@ -48,13 +44,6 @@ type InitialDetails = {
 };
 
 type InitialMedical = {
-  medications: string;
-  allergies: string;
-  conditions: string;
-  previousTreatments: string;
-  pregnantBreastfeeding: string;
-  smoking: string;
-  skinGoals: string;
   emergencyName: string;
   emergencyPhone: string;
 };
@@ -71,19 +60,16 @@ export function IpadCustomerFlow(props: {
     if (props.isNewCustomer) {
       return [
         "details",
-        "concerns",
         "skinHealth",
         "routine",
         "skinType",
-        "history",
-        "medical",
         "photos",
         "consent",
         "aftercare",
         "upsell",
       ];
     }
-    return ["details", "medical", "consent", "aftercare", "upsell"];
+    return ["details", "consent", "aftercare", "upsell"];
   }, [props.isNewCustomer]);
 
   const [stepIndex, setStepIndex] = useState(0);
@@ -96,12 +82,8 @@ export function IpadCustomerFlow(props: {
         emergencyPhone: props.initialMedical.emergencyPhone,
       },
       medicalExtras: {
-        allergies: props.initialMedical.allergies,
-        medications: props.initialMedical.medications,
         emergencyName: props.initialMedical.emergencyName,
         emergencyPhone: props.initialMedical.emergencyPhone,
-        pregnantBreastfeeding: props.initialMedical.pregnantBreastfeeding,
-        skinGoals: props.initialMedical.skinGoals,
       },
     }),
   );
@@ -119,29 +101,12 @@ export function IpadCustomerFlow(props: {
     setForm((f) => ({ ...f, details: { ...f.details, [key]: value } }));
   }
 
-  function setYn(
-    group: "skinHealth" | "routine" | "sunLifestyle" | "aestheticHistory",
-    id: string,
-    patch: Partial<YnAnswer>,
-  ) {
+  function setYn(group: "skinHealth" | "routine", id: string, patch: Partial<YnAnswer>) {
     setForm((f) => ({
       ...f,
       [group]: {
         ...f[group],
         [id]: { ...f[group][id], ...patch },
-      },
-    }));
-  }
-
-  function setPrecaution(id: string, patch: Partial<YnAnswer>) {
-    setForm((f) => ({
-      ...f,
-      medical: {
-        ...f.medical,
-        precautions: {
-          ...f.medical.precautions,
-          [id]: { ...f.medical.precautions[id], ...patch },
-        },
       },
     }));
   }
@@ -155,16 +120,9 @@ export function IpadCustomerFlow(props: {
       if (props.isNewCustomer && !d.emergencyName.trim()) return "Please add an emergency contact name.";
       if (props.isNewCustomer && !d.emergencyPhone.trim()) return "Please add an emergency contact number.";
     }
-    if (step === "concerns") {
-      if (!form.concerns.mainConcerns.trim()) return "Please tell us your main skin concerns.";
-    }
     if (step === "skinType" && props.isNewCustomer) {
       if (!form.skinType.selfAssessment) return "Please choose the skin type that fits you best.";
       if (!form.skinType.fitzpatrick) return "Please choose a Fitzpatrick skin type.";
-    }
-    if (step === "medical") {
-      if (!form.medical.allergies.trim()) return "Please confirm allergies (or type “None known”).";
-      if (!form.medical.pregnantBreastfeeding) return "Please answer the pregnancy / breastfeeding question.";
     }
     if (step === "consent") {
       const missing = CONSENT_STATEMENTS.some((s) => !form.consentChecks[s.id]);
@@ -216,17 +174,8 @@ export function IpadCustomerFlow(props: {
         consultation: form,
         details: form.details,
         medical: {
-          medications: form.medical.medications,
-          allergies: form.medical.allergies,
-          conditions: form.medical.pastHistory,
-          previousTreatments: summariseYn(form.aestheticHistory),
-          pregnantBreastfeeding: form.medical.pregnantBreastfeeding,
-          smoking: form.sunLifestyle.smoking?.answer === "Y" ? "Yes" : form.sunLifestyle.smoking?.answer === "N" ? "No" : "",
-          skinGoals: form.concerns.mainConcerns,
           emergencyName: form.details.emergencyName,
           emergencyPhone: form.details.emergencyPhone,
-          receivingTreatment: form.medical.receivingTreatment,
-          precautions: form.medical.precautions,
         },
         signedName,
         consentTitle,
@@ -415,45 +364,6 @@ export function IpadCustomerFlow(props: {
         </section>
       ) : null}
 
-      {step === "concerns" ? (
-        <section className="stack">
-          <h2 className="ipad-step-title">Your skin goals</h2>
-          <p className="muted" style={{ margin: 0 }}>
-            Tell us what brought you in — short answers are fine.
-          </p>
-          <div className="field">
-            <label htmlFor="mainConcerns">What are your main skin concerns?</label>
-            <textarea
-              id="mainConcerns"
-              rows={4}
-              value={form.concerns.mainConcerns}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  concerns: { ...f.concerns, mainConcerns: e.target.value },
-                }))
-              }
-              placeholder="e.g. dullness, pigmentation, fine lines…"
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="desiredResults">What results would you like from treatment?</label>
-            <textarea
-              id="desiredResults"
-              rows={4}
-              value={form.concerns.desiredResults}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  concerns: { ...f.concerns, desiredResults: e.target.value },
-                }))
-              }
-              placeholder="e.g. brighter, calmer, more even skin…"
-            />
-          </div>
-        </section>
-      ) : null}
-
       {step === "skinHealth" ? (
         <section className="stack">
           <h2 className="ipad-step-title">Skin health history</h2>
@@ -486,24 +396,30 @@ export function IpadCustomerFlow(props: {
         <section className="stack">
           <h2 className="ipad-step-title">Skin type</h2>
           <p className="muted" style={{ margin: 0 }}>
-            Choose what feels most like your skin most of the time.
+            Choose what feels most like your skin most of the time — graphics show the feel, text
+            names the type.
           </p>
-          <div className="chip-grid" role="listbox" aria-label="Skin type">
-            {SKIN_TYPE_OPTIONS.map((opt) => (
-              <button
-                key={opt}
-                type="button"
-                className={`chip${form.skinType.selfAssessment === opt ? " is-selected" : ""}`}
-                onClick={() =>
-                  setForm((f) => ({
-                    ...f,
-                    skinType: { ...f.skinType, selfAssessment: opt },
-                  }))
-                }
-              >
-                {opt}
-              </button>
-            ))}
+          <div className="skin-type-grid" role="listbox" aria-label="Skin type">
+            {SKIN_TYPE_OPTIONS.map((opt) => {
+              const visual = SKIN_TYPE_VISUALS[opt];
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  className={`skin-type-card${form.skinType.selfAssessment === opt ? " is-selected" : ""}`}
+                  onClick={() =>
+                    setForm((f) => ({
+                      ...f,
+                      skinType: { ...f.skinType, selfAssessment: opt },
+                    }))
+                  }
+                >
+                  <span className={`skin-type-icon ${visual.className}`} aria-hidden />
+                  <strong>{opt}</strong>
+                  <span>{visual.hint}</span>
+                </button>
+              );
+            })}
           </div>
           <div className="field">
             <label htmlFor="ethnicity">How would you describe your ethnicity? (optional)</label>
@@ -519,6 +435,9 @@ export function IpadCustomerFlow(props: {
             />
           </div>
           <h3 className="ipad-subhead">Fitzpatrick skin type</h3>
+          <p className="muted" style={{ margin: 0 }}>
+            Pick the closest skin tone — swatch plus description.
+          </p>
           <div className="fitz-grid">
             {FITZPATRICK_OPTIONS.map((opt) => (
               <button
@@ -532,183 +451,18 @@ export function IpadCustomerFlow(props: {
                   }))
                 }
               >
-                <strong>{opt.title}</strong>
-                <span>{opt.blurb}</span>
+                <span
+                  className="fitz-swatch"
+                  style={{ background: opt.tone }}
+                  aria-hidden
+                />
+                <span className="fitz-card__text">
+                  <strong>{opt.title}</strong>
+                  <span>{opt.blurb}</span>
+                </span>
               </button>
             ))}
           </div>
-        </section>
-      ) : null}
-
-      {step === "history" ? (
-        <section className="stack">
-          <h2 className="ipad-step-title">Sun, lifestyle & past treatments</h2>
-          <h3 className="ipad-subhead">Sun & lifestyle</h3>
-          <YnList
-            items={SUN_LIFESTYLE_ITEMS}
-            values={form.sunLifestyle}
-            onChange={(id, patch) => setYn("sunLifestyle", id, patch)}
-          />
-          <h3 className="ipad-subhead">Aesthetic history</h3>
-          <p className="muted" style={{ margin: 0 }}>
-            Previous, recent, or planned treatments.
-          </p>
-          <YnList
-            items={AESTHETIC_HISTORY_ITEMS}
-            values={form.aestheticHistory}
-            onChange={(id, patch) => setYn("aestheticHistory", id, patch)}
-          />
-          <div className="field">
-            <label htmlFor="adverse">Any adverse skin reactions in the past?</label>
-            <textarea
-              id="adverse"
-              rows={2}
-              value={form.aestheticNotes.adverseReactions}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  aestheticNotes: { ...f.aestheticNotes, adverseReactions: e.target.value },
-                }))
-              }
-              placeholder="Or type None"
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="disappoint">Any treatments where results were disappointing?</label>
-            <textarea
-              id="disappoint"
-              rows={2}
-              value={form.aestheticNotes.disappointingResults}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  aestheticNotes: {
-                    ...f.aestheticNotes,
-                    disappointingResults: e.target.value,
-                  },
-                }))
-              }
-              placeholder="Optional"
-            />
-          </div>
-        </section>
-      ) : null}
-
-      {step === "medical" ? (
-        <section className="stack">
-          <h2 className="ipad-step-title">
-            {props.isNewCustomer ? "Medical history" : "Quick medical update"}
-          </h2>
-          <p className="muted" style={{ margin: 0 }}>
-            Needed so we can treat you safely today.
-          </p>
-          {props.isNewCustomer ? (
-            <div className="field">
-              <span className="field__label">Currently receiving treatment from a GP or dentist?</span>
-              <YnToggle
-                value={form.medical.receivingTreatment.answer}
-                onChange={(v) =>
-                  setForm((f) => ({
-                    ...f,
-                    medical: {
-                      ...f.medical,
-                      receivingTreatment: { ...f.medical.receivingTreatment, answer: v },
-                    },
-                  }))
-                }
-              />
-              {form.medical.receivingTreatment.answer === "Y" ? (
-                <input
-                  className="yn-comment"
-                  placeholder="Optional comments"
-                  value={form.medical.receivingTreatment.comments}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      medical: {
-                        ...f.medical,
-                        receivingTreatment: {
-                          ...f.medical.receivingTreatment,
-                          comments: e.target.value,
-                        },
-                      },
-                    }))
-                  }
-                />
-              ) : null}
-            </div>
-          ) : null}
-          <div className="field">
-            <label htmlFor="meds">Current medications (including supplements)</label>
-            <textarea
-              id="meds"
-              rows={2}
-              value={form.medical.medications}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  medical: { ...f.medical, medications: e.target.value },
-                }))
-              }
-              placeholder="Or type None"
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="allergies">Allergies</label>
-            <textarea
-              id="allergies"
-              rows={2}
-              value={form.medical.allergies}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  medical: { ...f.medical, allergies: e.target.value },
-                }))
-              }
-              placeholder="Or type None known"
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="preg">Pregnancy / breastfeeding / IVF</label>
-            <select
-              id="preg"
-              value={form.medical.pregnantBreastfeeding}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  medical: { ...f.medical, pregnantBreastfeeding: e.target.value },
-                }))
-              }
-            >
-              <option value="">Select…</option>
-              <option value="No">No</option>
-              <option value="Yes">Yes</option>
-              <option value="IVF">IVF / fertility treatment</option>
-              <option value="Prefer not to say">Prefer not to say</option>
-            </select>
-          </div>
-          {props.isNewCustomer ? (
-            <div className="field">
-              <label htmlFor="past">Past medical & drug history (optional notes)</label>
-              <textarea
-                id="past"
-                rows={2}
-                value={form.medical.pastHistory}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    medical: { ...f.medical, pastHistory: e.target.value },
-                  }))
-                }
-              />
-            </div>
-          ) : null}
-          <h3 className="ipad-subhead">Precautions</h3>
-          <YnList
-            items={MEDICAL_PRECAUTION_ITEMS}
-            values={form.medical.precautions}
-            onChange={setPrecaution}
-          />
         </section>
       ) : null}
 
@@ -844,29 +598,16 @@ export function IpadCustomerFlow(props: {
   );
 }
 
-function summariseYn(map: Record<string, YnAnswer>): string {
-  return Object.entries(map)
-    .filter(([, v]) => v.answer === "Y")
-    .map(([k, v]) => (v.comments ? `${k}: ${v.comments}` : k))
-    .join("; ");
-}
-
 function labelForStep(step: Step): string {
   switch (step) {
     case "details":
       return "About you";
-    case "concerns":
-      return "Goals";
     case "skinHealth":
       return "Skin health";
     case "routine":
       return "Routine";
     case "skinType":
       return "Skin type";
-    case "history":
-      return "History";
-    case "medical":
-      return "Medical";
     case "photos":
       return "Photos";
     case "consent":
@@ -878,59 +619,4 @@ function labelForStep(step: Step): string {
     default:
       return step;
   }
-}
-
-function YnToggle(props: {
-  value: "" | "Y" | "N";
-  onChange: (v: "" | "Y" | "N") => void;
-}) {
-  return (
-    <div className="yn-toggle" role="group">
-      <button
-        type="button"
-        className={`yn-btn${props.value === "Y" ? " is-yes" : ""}`}
-        onClick={() => props.onChange("Y")}
-      >
-        Yes
-      </button>
-      <button
-        type="button"
-        className={`yn-btn${props.value === "N" ? " is-no" : ""}`}
-        onClick={() => props.onChange("N")}
-      >
-        No
-      </button>
-    </div>
-  );
-}
-
-function YnList(props: {
-  items: Array<{ id: string; label: string }>;
-  values: Record<string, YnAnswer>;
-  onChange: (id: string, patch: Partial<YnAnswer>) => void;
-}) {
-  return (
-    <div className="yn-list">
-      {props.items.map((item) => {
-        const row = props.values[item.id] ?? { answer: "", comments: "" };
-        return (
-          <div key={item.id} className="yn-row">
-            <p className="yn-row__label">{item.label}</p>
-            <YnToggle
-              value={row.answer}
-              onChange={(answer) => props.onChange(item.id, { answer })}
-            />
-            {row.answer === "Y" ? (
-              <input
-                className="yn-comment"
-                placeholder="Optional comments"
-                value={row.comments}
-                onChange={(e) => props.onChange(item.id, { comments: e.target.value })}
-              />
-            ) : null}
-          </div>
-        );
-      })}
-    </div>
-  );
 }

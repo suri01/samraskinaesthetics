@@ -789,16 +789,21 @@ a {
   color: #f7f5f1;
 }
 
-.fitz-grid {
+.skin-type-grid {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.65rem;
 }
 
-.fitz-card {
+.skin-type-card {
   display: grid;
-  gap: 0.2rem;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 0.75rem;
+  row-gap: 0.15rem;
+  align-items: center;
   text-align: left;
-  padding: 0.9rem 1rem;
+  padding: 0.85rem 0.95rem;
   border-radius: 1rem;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.55);
@@ -806,7 +811,122 @@ a {
   cursor: pointer;
 }
 
-.fitz-card span {
+.skin-type-card strong {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.skin-type-card > span:last-child {
+  grid-column: 2;
+  grid-row: 2;
+  color: rgba(26, 33, 28, 0.68);
+  font-size: 0.85rem;
+}
+
+.skin-type-card.is-selected {
+  border-color: var(--gold);
+  background: rgba(176, 141, 87, 0.12);
+}
+
+.skin-type-icon {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(43, 58, 49, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+
+.skin-type-icon--normal {
+  background: linear-gradient(145deg, #f3e6d8, #d8c3a8);
+}
+
+.skin-type-icon--oily {
+  background: linear-gradient(145deg, #efe4c8, #c9b37a);
+  box-shadow: inset 0 0 0 0.35rem rgba(255, 255, 255, 0.35);
+}
+
+.skin-type-icon--dry {
+  background:
+    repeating-linear-gradient(
+      -28deg,
+      #e8d5c4,
+      #e8d5c4 3px,
+      #d7c0ab 3px,
+      #d7c0ab 6px
+    );
+}
+
+.skin-type-icon--combination {
+  background: linear-gradient(90deg, #dcc09a 50%, #f0e2d2 50%);
+}
+
+.skin-type-icon--sensitive {
+  background: radial-gradient(circle at 35% 35%, #f2c4b8, #e8d2c4 55%, #d9c0ae);
+}
+
+.skin-type-icon--blemish {
+  background: #e7d5c4;
+}
+
+.skin-type-icon--blemish::before,
+.skin-type-icon--blemish::after {
+  content: "";
+  position: absolute;
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgba(140, 78, 62, 0.55);
+}
+
+.skin-type-icon--blemish::before {
+  top: 0.55rem;
+  left: 0.7rem;
+}
+
+.skin-type-icon--blemish::after {
+  bottom: 0.6rem;
+  right: 0.65rem;
+  width: 0.28rem;
+  height: 0.28rem;
+}
+
+.fitz-grid {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.fitz-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: center;
+  text-align: left;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  font: inherit;
+  cursor: pointer;
+}
+
+.fitz-swatch {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(43, 58, 49, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+}
+
+.fitz-card__text {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.fitz-card__text span {
   color: rgba(26, 33, 28, 0.68);
   font-size: 0.9rem;
 }

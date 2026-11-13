@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { and, desc, eq } from "drizzle-orm";
+import { StaffConsultationForm } from "@/components/StaffConsultationForm";
 import { StaffShell } from "@/components/StaffShell";
 import { db } from "@/db";
 import {
@@ -96,6 +97,13 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
             {customer.whatsappOptIn ? "yes" : "no"} · Email {customer.emailOptIn ? "yes" : "no"} · Marketing{" "}
             {customer.marketingOptIn ? "yes" : "no"} (no marketing without opt-in)
           </p>
+        </div>
+
+        <div className="panel stack" id="patient-consultation">
+          <StaffConsultationForm
+            customerId={customer.id}
+            initial={customer.medicalHistoryJson ?? null}
+          />
         </div>
 
         <div className="panel">
