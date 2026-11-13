@@ -213,6 +213,7 @@ export function IpadCustomerFlow(props: {
     const consentBody = buildConsentBody(form.consentChecks);
     const res = await fetch("/api/ipad/submit", {
       method: "POST",
+      credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         consultation: form,
@@ -251,7 +252,7 @@ export function IpadCustomerFlow(props: {
   }
 
   async function abandon() {
-    await fetch("/api/ipad/abandon", { method: "POST" });
+    await fetch("/api/ipad/abandon", { method: "POST", credentials: "same-origin" });
     router.push("/ipad");
     router.refresh();
   }

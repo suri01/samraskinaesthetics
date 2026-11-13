@@ -32,17 +32,32 @@ export type IpadContext = {
   deviceId: string;
 };
 
-function cookieOptions(maxAgeSeconds: number) {
-  const secure =
+function cookieSecure() {
+  return (
     process.env.NODE_ENV === "production" ||
-    (process.env.APP_URL ?? "").startsWith("https://");
+    (process.env.APP_URL ?? "").startsWith("https://")
+  );
+}
+
+function cookieOptions(maxAgeSeconds: number) {
   return {
     httpOnly: true,
-    secure,
-    sameSite: "strict" as const,
-    path: "/ipad",
+    secure: cookieSecure(),
+    sameSite: "lax" as const,
+    // Must cover /api/ipad/* — "/ipad" alone does not.
+    path: "/",
     maxAge: maxAgeSeconds,
   };
+}
+
+function clearLegacyIpadPathCookie(jar: Awaited<ReturnType<typeof cookies>>, name: string) {
+  jar.set(name, "", {
+    httpOnly: true,
+    secure: cookieSecure(),
+    sameSite: "lax",
+    path: "/ipad",
+    maxAge: 0,
+  });
 }
 
 export async function issueIpadUnlockCode(appointmentId: string, clinicId: string) {
@@ -114,6 +129,7 @@ export async function startIpadSession(code: string): Promise<{ ok: true } | { e
     .where(eq(appointments.id, appt.id));
 
   const jar = await cookies();
+  clearLegacyIpadPathCookie(jar, IPAD_COOKIE);
   jar.set(IPAD_COOKIE, token, cookieOptions(Math.floor(IPAD_SESSION_MS / 1000)));
 
   await writeAudit({
@@ -199,6 +215,7 @@ export async function completeIpadSession() {
     .update(ipadSessions)
     .set({ completedAt: new Date() })
     .where(eq(ipadSessions.tokenHash, sha256(token)));
+  clearLegacyIpadPathCookie(jar, IPAD_COOKIE);
   jar.set(IPAD_COOKIE, "", { ...cookieOptions(0), maxAge: 0 });
 }
 
@@ -210,5 +227,6 @@ export async function abandonIpadSession() {
     .update(ipadSessions)
     .set({ abandonedAt: new Date() })
     .where(eq(ipadSessions.tokenHash, sha256(token)));
+  clearLegacyIpadPathCookie(jar, IPAD_COOKIE);
   jar.set(IPAD_COOKIE, "", { ...cookieOptions(0), maxAge: 0 });
 }

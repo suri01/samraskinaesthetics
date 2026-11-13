@@ -177,7 +177,11 @@ export function IpadCameraCapture(props: {
       body.set("stage", stage);
       body.set("caption", `iPad ${source} · ${stage}`);
 
-      const res = await fetch("/api/ipad/photos", { method: "POST", body });
+      const res = await fetch("/api/ipad/photos", {
+        method: "POST",
+        credentials: "same-origin",
+        body,
+      });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? "Upload failed");
 

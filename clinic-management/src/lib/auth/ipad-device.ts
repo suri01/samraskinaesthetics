@@ -13,17 +13,38 @@ export type IpadDeviceContext = {
   deviceName: string;
 };
 
-function cookieOptions(maxAgeSeconds: number) {
-  const secure =
+function cookieSecure() {
+  return (
     process.env.NODE_ENV === "production" ||
-    (process.env.APP_URL ?? "").startsWith("https://");
+    (process.env.APP_URL ?? "").startsWith("https://")
+  );
+}
+
+function cookieOptions(maxAgeSeconds: number) {
   return {
     httpOnly: true,
-    secure,
-    sameSite: "strict" as const,
-    path: "/ipad",
+    secure: cookieSecure(),
+    sameSite: "lax" as const,
+    // Must cover /api/ipad/* (unlock, submit, photos) — "/ipad" alone does not.
+    path: "/",
     maxAge: maxAgeSeconds,
   };
+}
+
+/** Drop legacy cookies scoped to path=/ipad so they cannot shadow the new ones. */
+function clearLegacyIpadPathCookies(
+  jar: Awaited<ReturnType<typeof cookies>>,
+  names: string[],
+) {
+  for (const name of names) {
+    jar.set(name, "", {
+      httpOnly: true,
+      secure: cookieSecure(),
+      sameSite: "lax",
+      path: "/ipad",
+      maxAge: 0,
+    });
+  }
 }
 
 export async function createIpadDeviceSession(input: {
@@ -56,6 +77,7 @@ export async function createIpadDeviceSession(input: {
     .returning();
 
   const jar = await cookies();
+  clearLegacyIpadPathCookies(jar, [IPAD_DEVICE_COOKIE, IPAD_COOKIE]);
   jar.set(IPAD_DEVICE_COOKIE, token, cookieOptions(Math.floor(IPAD_DEVICE_SESSION_MS / 1000)));
   // Clear any previous customer handover cookie on re-auth.
   jar.set(IPAD_COOKIE, "", { ...cookieOptions(0), maxAge: 0 });
@@ -116,6 +138,7 @@ export async function clearIpadDeviceSession() {
       .set({ revokedAt: new Date() })
       .where(eq(ipadDeviceSessions.tokenHash, sha256(token)));
   }
+  clearLegacyIpadPathCookies(jar, [IPAD_DEVICE_COOKIE, IPAD_COOKIE]);
   jar.set(IPAD_DEVICE_COOKIE, "", { ...cookieOptions(0), maxAge: 0 });
   jar.set(IPAD_COOKIE, "", { ...cookieOptions(0), maxAge: 0 });
 }

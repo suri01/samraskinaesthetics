@@ -15,6 +15,7 @@ export function IpadUnlockForm() {
     setError(null);
     const res = await fetch("/api/ipad/unlock", {
       method: "POST",
+      credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code }),
     });
