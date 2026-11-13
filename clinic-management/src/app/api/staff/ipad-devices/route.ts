@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { ipadDeviceRegistrations, ipadDevices } from "@/db/schema";
 import { writeAudit } from "@/lib/audit";
 import { AuthError, requireStaff } from "@/lib/auth/staff";
-import { randomToken, sha256 } from "@/lib/crypto";
+import { randomSetupCode, randomToken, sha256 } from "@/lib/crypto";
 
 export async function GET() {
   try {
@@ -44,6 +44,7 @@ export async function POST(req: Request) {
     if (!name) return NextResponse.json({ error: "Device name required" }, { status: 400 });
 
     const token = randomToken(24);
+    const setupCode = randomSetupCode(8);
     const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
     const [reg] = await db
       .insert(ipadDeviceRegistrations)
@@ -51,6 +52,7 @@ export async function POST(req: Request) {
         clinicId: staff.clinicId,
         name,
         tokenHash: sha256(token),
+        setupCodeHash: sha256(setupCode),
         createdByStaffId: staff.staffUserId,
         expiresAt,
       })
@@ -71,6 +73,8 @@ export async function POST(req: Request) {
       ok: true,
       registrationId: reg.id,
       expiresAt,
+      setupCode,
+      registerPath: "/ipad/register",
       registerUrl: `${appUrl}/ipad/register?token=${token}`,
       token,
     });

@@ -41,6 +41,17 @@ export function randomNumericCode(length = 6): string {
   return n.toString().padStart(length, "0");
 }
 
+/** Short human-typable setup code (no ambiguous characters). */
+export function randomSetupCode(length = 8): string {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = randomBytes(length);
+  let out = "";
+  for (let i = 0; i < length; i++) {
+    out += alphabet[bytes[i]! % alphabet.length];
+  }
+  return out;
+}
+
 /** Encrypt small secrets (TOTP) — local v1; replace with KMS in prod. */
 export function encryptSecret(plaintext: string): string {
   const key = createHash("sha256").update(`enc:${SESSION_SECRET()}`).digest();

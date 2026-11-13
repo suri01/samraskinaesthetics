@@ -15,6 +15,7 @@ export function IpadDeviceManager() {
   const [devices, setDevices] = useState<Device[]>([]);
   const [name, setName] = useState("Front desk iPad");
   const [registerUrl, setRegisterUrl] = useState<string | null>(null);
+  const [setupCode, setSetupCode] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -32,6 +33,7 @@ export function IpadDeviceManager() {
     setBusy(true);
     setError(null);
     setRegisterUrl(null);
+    setSetupCode(null);
     const res = await fetch("/api/staff/ipad-devices", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -43,6 +45,7 @@ export function IpadDeviceManager() {
       setError(data.error ?? "Could not create registration");
       return;
     }
+    setSetupCode(data.setupCode ?? null);
     setRegisterUrl(data.registerUrl);
     await load();
   }
@@ -62,20 +65,32 @@ export function IpadDeviceManager() {
         Registered iPads (passkeys)
       </h2>
       <p className="muted" style={{ margin: 0 }}>
-        Create a one-time link, open it <strong>on the clinic iPad</strong>, then create a device
-        passkey (Face ID / Touch ID). After that, `/ipad` unlocks with the passkey before customer
-        check-in.
+        Create a setup code, open <strong>/ipad/register</strong> on the clinic iPad, enter the code,
+        then create a device passkey. After that the iPad authenticates like a mobile app before any
+        customer handover.
       </p>
       <div className="field">
         <label htmlFor="ipad-name">Device name</label>
         <input id="ipad-name" value={name} onChange={(e) => setName(e.target.value)} />
       </div>
       <button className="btn btn--primary" type="button" onClick={createRegistration} disabled={busy}>
-        {busy ? "Creating…" : "Create registration link"}
+        {busy ? "Creating…" : "Create iPad setup code"}
       </button>
+      {setupCode ? (
+        <p className="ok">
+          Setup code (30 min):{" "}
+          <strong style={{ fontSize: "1.5rem", letterSpacing: "0.16em" }}>{setupCode}</strong>
+          <br />
+          On the iPad open{" "}
+          <a href="/ipad/register">
+            <strong>/ipad/register</strong>
+          </a>{" "}
+          and enter this code.
+        </p>
+      ) : null}
       {registerUrl ? (
-        <p className="ok" style={{ wordBreak: "break-all" }}>
-          Open on the iPad (30 min): <a href={registerUrl}>{registerUrl}</a>
+        <p className="muted" style={{ wordBreak: "break-all", margin: 0, fontSize: "0.85rem" }}>
+          Or open the direct link: <a href={registerUrl}>{registerUrl}</a>
         </p>
       ) : null}
       {error ? <p className="error">{error}</p> : null}

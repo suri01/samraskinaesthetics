@@ -240,12 +240,17 @@ export const ipadDeviceRegistrations = pgTable(
       .references(() => clinics.id),
     name: text("name").notNull(),
     tokenHash: text("token_hash").notNull(),
+    /** Short code shown to staff / typed on the iPad registration screen. */
+    setupCodeHash: text("setup_code_hash"),
     createdByStaffId: uuid("created_by_staff_id").references(() => staffUsers.id),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
     consumedAt: timestamp("consumed_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },
-  (t) => [uniqueIndex("ipad_device_registrations_token_uidx").on(t.tokenHash)],
+  (t) => [
+    uniqueIndex("ipad_device_registrations_token_uidx").on(t.tokenHash),
+    uniqueIndex("ipad_device_registrations_setup_uidx").on(t.setupCodeHash),
+  ],
 );
 
 export const webauthnChallenges = pgTable(

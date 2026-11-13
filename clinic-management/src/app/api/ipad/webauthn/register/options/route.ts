@@ -1,29 +1,20 @@
 import { generateRegistrationOptions } from "@simplewebauthn/server";
-import { and, eq, gt, isNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { ipadDeviceRegistrations, ipadDevices, webauthnChallenges } from "@/db/schema";
-import { sha256 } from "@/lib/crypto";
+import { ipadDevices, webauthnChallenges } from "@/db/schema";
+import { findOpenRegistration } from "@/lib/auth/ipad-registration";
 import { rpID, rpName } from "@/lib/webauthn";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
-  const token = String(body.token ?? "").trim();
-  if (!token) return NextResponse.json({ error: "Registration token required" }, { status: 400 });
-
-  const regs = await db
-    .select()
-    .from(ipadDeviceRegistrations)
-    .where(
-      and(
-        eq(ipadDeviceRegistrations.tokenHash, sha256(token)),
-        isNull(ipadDeviceRegistrations.consumedAt),
-        gt(ipadDeviceRegistrations.expiresAt, new Date()),
-      ),
-    )
-    .limit(1);
-  const reg = regs[0];
-  if (!reg) return NextResponse.json({ error: "Invalid or expired registration link" }, { status: 400 });
+  const reg = await findOpenRegistration({
+    token: body.token ? String(body.token) : undefined,
+    setupCode: body.setupCode ? String(body.setupCode) : undefined,
+  });
+  if (!reg) {
+    return NextResponse.json({ error: "Invalid or expired registration code" }, { status: 400 });
+  }
 
   const existing = await db
     .select({ credentialId: ipadDevices.credentialId })
@@ -57,5 +48,6 @@ export async function POST(req: Request) {
   return NextResponse.json({
     options,
     deviceName: reg.name,
+    registrationId: reg.id,
   });
 }

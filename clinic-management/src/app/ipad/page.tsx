@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { IpadPasskeyUnlock } from "@/components/IpadPasskeyUnlock";
 import { IpadUnlockForm } from "@/components/IpadUnlockForm";
@@ -22,10 +23,17 @@ export default async function IpadEntryPage() {
               backend access stays limited to registered iPads.
             </p>
             <IpadPasskeyUnlock />
-            <p className="muted" style={{ fontSize: "0.85rem", margin: 0 }}>
-              First time setup: Staff → Settings → create a registration link, open it on this iPad
-              once.
-            </p>
+            <div className="panel stack" style={{ background: "rgba(255,255,255,0.5)" }}>
+              <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>
+                First time on this iPad?
+              </h2>
+              <p className="muted" style={{ margin: 0 }}>
+                Open the registration screen and enter the setup code from Staff → Settings.
+              </p>
+              <Link className="btn btn--ghost" href="/ipad/register">
+                Go to iPad registration screen
+              </Link>
+            </div>
           </>
         ) : (
           <>

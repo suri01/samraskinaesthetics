@@ -1,35 +1,28 @@
 import { verifyRegistrationResponse } from "@simplewebauthn/server";
 import { isoBase64URL } from "@simplewebauthn/server/helpers";
-import { and, eq, gt, isNull } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { ipadDeviceRegistrations, ipadDevices, webauthnChallenges } from "@/db/schema";
 import { writeAudit } from "@/lib/audit";
+import { findOpenRegistration } from "@/lib/auth/ipad-registration";
 import { createIpadDeviceSession } from "@/lib/auth/ipad-device";
-import { sha256 } from "@/lib/crypto";
 import { expectedOrigins, rpID } from "@/lib/webauthn";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
-  const token = String(body.token ?? "").trim();
   const response = body.response;
-  if (!token || !response) {
-    return NextResponse.json({ error: "token and response required" }, { status: 400 });
+  if (!response) {
+    return NextResponse.json({ error: "Passkey response required" }, { status: 400 });
   }
 
-  const regs = await db
-    .select()
-    .from(ipadDeviceRegistrations)
-    .where(
-      and(
-        eq(ipadDeviceRegistrations.tokenHash, sha256(token)),
-        isNull(ipadDeviceRegistrations.consumedAt),
-        gt(ipadDeviceRegistrations.expiresAt, new Date()),
-      ),
-    )
-    .limit(1);
-  const reg = regs[0];
-  if (!reg) return NextResponse.json({ error: "Invalid or expired registration link" }, { status: 400 });
+  const reg = await findOpenRegistration({
+    token: body.token ? String(body.token) : undefined,
+    setupCode: body.setupCode ? String(body.setupCode) : undefined,
+  });
+  if (!reg) {
+    return NextResponse.json({ error: "Invalid or expired registration code" }, { status: 400 });
+  }
 
   const allChallenges = await db
     .select()
@@ -94,7 +87,6 @@ export async function POST(req: Request) {
     .where(eq(ipadDeviceRegistrations.id, reg.id));
 
   await db.delete(webauthnChallenges).where(eq(webauthnChallenges.id, challengeRow.id));
-
   await createIpadDeviceSession({ clinicId: reg.clinicId, deviceId: device.id });
 
   await writeAudit({
