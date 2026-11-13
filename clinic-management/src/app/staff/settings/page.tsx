@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { IpadDeviceManager } from "@/components/IpadDeviceManager";
 import { MfaSetupPanel } from "@/components/MfaSetupPanel";
 import { StaffShell } from "@/components/StaffShell";
+import { TreatmentMenuPanel } from "@/components/TreatmentMenuPanel";
 import { db } from "@/db";
 import { clinicSettings, staffUsers } from "@/db/schema";
 import { requireStaffPage } from "@/lib/auth/staff";
@@ -20,8 +21,12 @@ export default async function SettingsPage() {
   return (
     <StaffShell>
       <h1 className="page-title">Settings</h1>
-      <p className="page-lede">Clinic security, staff access, consent, and registered iPads.</p>
+      <p className="page-lede">Clinic security, staff access, consent, treatments, and registered iPads.</p>
       <div className="stack">
+        <div className="panel">
+          <TreatmentMenuPanel />
+        </div>
+
         {isAdmin(ctx.role) ? (
           <div className="panel" id="ipad-devices">
             <IpadDeviceManager />

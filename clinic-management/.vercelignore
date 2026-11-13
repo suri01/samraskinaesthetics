@@ -1,0 +1,12 @@
+node_modules
+.next
+.env
+.env.*
+.neon
+docs/brand-samples
+*.pdf
+samra-logo-original-opaque.png
+samra-logo-full.png
+samra-logo-800.png
+.DS_Store
+tsconfig.tsbuildinfo

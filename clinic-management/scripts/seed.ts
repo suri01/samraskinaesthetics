@@ -195,7 +195,7 @@ async function main() {
         startsAt: today10,
         endsAt: new Date(today10.getTime() + 60 * 60 * 1000),
         status: "scheduled",
-        serviceName: "Skin consultation",
+        serviceName: "Initial skin consultation",
         notes: "New customer — sample.",
       },
       {
@@ -205,7 +205,7 @@ async function main() {
         startsAt: today1130,
         endsAt: new Date(today1130.getTime() + 45 * 60 * 1000),
         status: "checked_in",
-        serviceName: "Treatment facial",
+        serviceName: "Dermapen 4 microneedling — Face",
       },
       {
         clinicId: clinic.id,
@@ -214,7 +214,7 @@ async function main() {
         startsAt: tomorrow14,
         endsAt: new Date(tomorrow14.getTime() + 60 * 60 * 1000),
         status: "scheduled",
-        serviceName: "Follow-up review",
+        serviceName: "Review appointment",
       },
     ])
     .returning();
@@ -348,7 +348,7 @@ async function main() {
     channel: "whatsapp",
     toAddress: custA.phone!,
     preview: "Reminder: appointment on today 10:00",
-    body: "Hi Amelia, this is a reminder of your Skin consultation appointment at Samra Skin & Aesthetics. Reply STOP to opt out of reminders.",
+    body: "Hi Amelia, this is a reminder of your Initial skin consultation appointment at Samra Skin & Aesthetics. Reply STOP to opt out of reminders.",
     status: "mocked",
     mocked: true,
   });

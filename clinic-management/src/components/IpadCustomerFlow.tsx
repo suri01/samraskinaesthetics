@@ -840,7 +840,7 @@ export function IpadCustomerFlow(props: {
                   <span className="ipad-upsell__title">{offer.title}</span>
                   <span className="ipad-upsell__blurb">{offer.blurb}</span>
                   <span className="ipad-upsell__price">
-                    {offer.pricePence > 0 ? formatGbp(offer.pricePence) : "Discuss with clinician"}
+                    {offer.pricePence > 0 ? formatGbp(offer.pricePence) : "Confirm with clinician"}
                   </span>
                 </button>
               );

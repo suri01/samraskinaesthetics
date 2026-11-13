@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { bookingServiceOptions } from "@/lib/treatments";
+
+const SERVICE_OPTIONS = bookingServiceOptions();
 
 export function RegisterBookingForm() {
   const router = useRouter();
@@ -9,7 +12,9 @@ export function RegisterBookingForm() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [serviceName, setServiceName] = useState("Skin consultation");
+  const [serviceName, setServiceName] = useState(
+    SERVICE_OPTIONS[0]?.value ?? "Initial skin consultation",
+  );
   const [startsAt, setStartsAt] = useState("");
   const [whatsappOptIn, setWhatsappOptIn] = useState(true);
   const [msg, setMsg] = useState<string | null>(null);
@@ -85,10 +90,11 @@ export function RegisterBookingForm() {
       <div className="field">
         <label htmlFor="bsvc">Treatment booked</label>
         <select id="bsvc" value={serviceName} onChange={(e) => setServiceName(e.target.value)}>
-          <option>Skin consultation</option>
-          <option>Treatment facial</option>
-          <option>Follow-up review</option>
-          <option>Injectables consult</option>
+          {SERVICE_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
         </select>
       </div>
       <div className="field">

@@ -43,3 +43,5 @@ next-env.d.ts
 drizzle/meta
 .neon
 .env.vercel.neon
+.vercel
+.env*
