@@ -9,7 +9,7 @@ import { randomSetupCode, randomToken, sha256 } from "@/lib/crypto";
 export async function GET() {
   try {
     const staff = await requireStaff();
-    if (staff.role !== "owner" && staff.role !== "receptionist") {
+    if (staff.role !== "owner" && staff.role !== "receptionist" && staff.role !== "practitioner") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     const devices = await db
@@ -36,7 +36,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const staff = await requireStaff();
-    if (staff.role !== "owner" && staff.role !== "receptionist") {
+    if (staff.role !== "owner" && staff.role !== "receptionist" && staff.role !== "practitioner") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     const body = await req.json().catch(() => ({}));
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
   try {
     const staff = await requireStaff();
-    if (staff.role !== "owner" && staff.role !== "receptionist") {
+    if (staff.role !== "owner" && staff.role !== "receptionist" && staff.role !== "practitioner") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     const body = await req.json();

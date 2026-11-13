@@ -16,7 +16,8 @@ export default async function SettingsPage() {
     .limit(1);
   const staff = await db.select().from(staffUsers).where(eq(staffUsers.clinicId, ctx.clinicId));
   const me = staff.find((s) => s.id === ctx.staffUserId);
-  const canManageIpads = ctx.role === "owner" || ctx.role === "receptionist";
+  const canManageIpads =
+    ctx.role === "owner" || ctx.role === "receptionist" || ctx.role === "practitioner";
 
   return (
     <StaffShell>
@@ -26,11 +27,21 @@ export default async function SettingsPage() {
         medical-record items need adviser review — not claimed as compliant by this software.
       </p>
       <div className="stack">
-        {canManageIpads ? (
-          <div className="panel">
+        <div className="panel" id="ipad-devices">
+          {canManageIpads ? (
             <IpadDeviceManager />
-          </div>
-        ) : null}
+          ) : (
+            <div className="stack">
+              <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>
+                Registered iPads (passkeys)
+              </h2>
+              <p className="muted" style={{ margin: 0 }}>
+                Your role ({ctx.role}) can view settings but cannot register clinic iPads. Sign in as
+                reception or owner to create a setup code.
+              </p>
+            </div>
+          )}
+        </div>
 
         <div className="panel stack">
           <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>Your MFA</h2>

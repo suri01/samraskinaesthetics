@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 export function LoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState("practitioner@samra.demo");
+  const [email, setEmail] = useState("reception@samra.demo");
   const [password, setPassword] = useState("ClinicDemo2026!");
   const [totpCode, setTotpCode] = useState("");
   const [needsMfa, setNeedsMfa] = useState(false);
@@ -77,8 +77,8 @@ export function LoginForm() {
         {busy ? "Signing in…" : needsMfa ? "Verify & sign in" : "Sign in"}
       </button>
       <p className="muted" style={{ fontSize: "0.85rem", margin: 0 }}>
-        Sample: practitioner@samra.demo / ClinicDemo2026! (no MFA). Owner account requires TOTP from
-        seed output.
+        Sample: reception@samra.demo / ClinicDemo2026! (no MFA; can register iPads). Owner requires
+        TOTP from seed output.
       </p>
     </form>
   );
