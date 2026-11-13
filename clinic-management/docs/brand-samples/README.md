@@ -1,17 +1,12 @@
 # Samra brand samples
 
-Preview boards only — not applied to the app yet.
-
-Open this folder in Finder or browse the images here:
+Reference boards and QA for the champagne → sage welcome theme.
 
 | File | What it shows |
 |------|----------------|
-| `brand-samples-contact-sheet.png` | All samples on one page |
-| `sample-transparent-checker.png` | Logo with no background |
-| `sample-A-open-champagne-sage.png` | A — champagne + sage mist |
-| `sample-B-sage-champagne-split.png` | B — sage / champagne split |
-| `sample-C-welcome-card.png` | C — card with champagne header |
-| `sample-D-champagne-lockup.png` | D — champagne field lockup |
-| `sample-welcome-open.png` | Welcome page mock |
-
-Tell the agent which letter you want applied.
+| `welcome-screen-target.jpg` | Approved welcome look (composition reference) |
+| `brand-mock-welcome-open.jpg` | Chosen open-welcome theme mock |
+| `lockup-rebuilt-*.jpg` | Current floating gold lockup QA |
+| `welcome-live-html.jpg` | Live HTML home screenshot |
+| `welcome-html-vs-target.jpg` | Target vs live side-by-side |
+| `sample-*.png` / `brand-*.jpg` | Earlier direction boards (kept for history) |
