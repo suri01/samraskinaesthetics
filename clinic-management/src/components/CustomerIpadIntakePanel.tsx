@@ -1,5 +1,4 @@
 import {
-  CONSENT_STATEMENTS,
   FITZPATRICK_OPTIONS,
   SKIN_HEALTH_ITEMS,
   SKIN_TYPE_VISUALS,
@@ -73,9 +72,6 @@ export function CustomerIpadIntakePanel(props: {
     selfAssessment && selfAssessment in SKIN_TYPE_VISUALS
       ? SKIN_TYPE_VISUALS[selfAssessment as keyof typeof SKIN_TYPE_VISUALS]
       : null;
-
-  const consentChecks = form?.consentChecks ?? {};
-  const tickedConsent = CONSENT_STATEMENTS.filter((s) => consentChecks[s.id]);
 
   return (
     <div className="panel stack" id="customer-entered">
@@ -194,18 +190,6 @@ export function CustomerIpadIntakePanel(props: {
                 {props.aftercareAcknowledged || form.aftercareAcknowledged ? "Yes" : "No"}
               </span>
             </p>
-            {tickedConsent.length > 0 ? (
-              <ul style={{ margin: 0, paddingLeft: "1.1rem" }}>
-                {tickedConsent.map((s) => (
-                  <li key={s.id}>{s.label}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="muted" style={{ margin: 0 }}>
-                Consent tick list not stored on this payload
-                {props.consents.length > 0 ? " — see signed consent records below." : "."}
-              </p>
-            )}
           </div>
         </>
       )}
