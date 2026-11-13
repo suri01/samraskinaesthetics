@@ -148,11 +148,11 @@ export function StaffConsultationForm(props: {
   return (
     <form className="stack" onSubmit={save}>
       <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>
-        Patient consultation
+        Patient consultation (staff)
       </h2>
       <p className="muted" style={{ margin: 0 }}>
-        Clinician-facing notes for this patient — skin goals, routine, lifestyle/treatment history,
-        and medical history. Captured here rather than on the customer iPad.
+        Clinician notes — skin goals, skincare routine, sun/lifestyle, past treatments, and medical
+        history. Customer iPad answers (skin type, skin health, consent) are in the section above.
       </p>
       {mh.staffConsultationAt ? (
         <p className="muted" style={{ margin: 0 }}>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { and, desc, eq } from "drizzle-orm";
+import { CustomerIpadIntakePanel } from "@/components/CustomerIpadIntakePanel";
 import { StaffConsultationForm } from "@/components/StaffConsultationForm";
 import { StaffShell } from "@/components/StaffShell";
 import { db } from "@/db";
@@ -48,11 +49,19 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
   const consents = await db
     .select()
     .from(consentRecords)
-    .where(and(eq(consentRecords.customerId, id), eq(consentRecords.clinicId, ctx.clinicId)));
+    .where(and(eq(consentRecords.customerId, id), eq(consentRecords.clinicId, ctx.clinicId)))
+    .orderBy(desc(consentRecords.signedAt));
   const forms = await db
     .select()
     .from(formSubmissions)
-    .where(and(eq(formSubmissions.customerId, id), eq(formSubmissions.clinicId, ctx.clinicId)));
+    .where(and(eq(formSubmissions.customerId, id), eq(formSubmissions.clinicId, ctx.clinicId)))
+    .orderBy(desc(formSubmissions.createdAt));
+
+  const mh = customer.medicalHistoryJson;
+  const latestFormConsultation =
+    forms.find((f) => f.answersJson && typeof f.answersJson === "object" && "consultation" in f.answersJson)
+      ?.answersJson?.consultation ?? null;
+  const consultationPayload = mh?.consultation ?? latestFormConsultation;
 
   return (
     <StaffShell>
@@ -70,20 +79,24 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
           <span className="badge badge--gold">New · full iPad intake pending</span>
         )}
       </p>
+      <p className="row" style={{ gap: "0.75rem", flexWrap: "wrap", marginTop: 0 }}>
+        <a href="#customer-entered">Customer entered (iPad)</a>
+        <a href="#patient-consultation">Patient consultation</a>
+        <a href="#photos">Photos</a>
+      </p>
       <div className="stack">
         <div className="panel stack">
           <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>Clinical summary</h2>
           <p style={{ margin: 0 }}>
-            <strong>Allergies:</strong> {customer.allergies ?? "—"}
+            <strong>Allergies:</strong> {customer.allergies ?? mh?.allergies ?? "—"}
           </p>
           <p style={{ margin: 0 }}>
-            <strong>Notes / goals:</strong> {customer.medicalNotes ?? "—"}
+            <strong>Notes / goals:</strong> {customer.medicalNotes ?? mh?.skinGoals ?? "—"}
           </p>
-          {customer.medicalHistoryJson ? (
+          {mh ? (
             <p className="muted" style={{ margin: 0 }}>
-              History on file: Meds {customer.medicalHistoryJson.medications || "—"} · Conditions{" "}
-              {customer.medicalHistoryJson.conditions || "—"} · Emergency{" "}
-              {customer.medicalHistoryJson.emergencyName || "—"}
+              History on file: Meds {mh.medications || "—"} · Conditions{" "}
+              {mh.pastHistory || mh.conditions || "—"} · Emergency {mh.emergencyName || "—"}
             </p>
           ) : null}
           {customer.upsellInterestJson && customer.upsellInterestJson.length > 0 ? (
@@ -98,6 +111,16 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
             {customer.marketingOptIn ? "yes" : "no"} (no marketing without opt-in)
           </p>
         </div>
+
+        <CustomerIpadIntakePanel
+          consultation={consultationPayload}
+          aftercareAcknowledged={mh?.aftercareAcknowledged}
+          intakeCompletedAt={customer.intakeCompletedAt}
+          addressJson={customer.addressJson}
+          whatsappOptIn={customer.whatsappOptIn}
+          emailOptIn={customer.emailOptIn}
+          consents={consents}
+        />
 
         <div className="panel stack" id="patient-consultation">
           <StaffConsultationForm
@@ -139,7 +162,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
           {treatments.length === 0 ? <p className="muted">No treatments yet.</p> : null}
         </div>
 
-        <div className="panel">
+        <div className="panel" id="photos">
           <h2 style={{ marginTop: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>Photos</h2>
           <ul>
             {photoRows.map((p) => (
@@ -153,10 +176,21 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
         </div>
 
         <div className="panel">
-          <h2 style={{ marginTop: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>Forms & consent</h2>
-          <p>
-            Forms: {forms.length} · Consents: {consents.length}
+          <h2 style={{ marginTop: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>Form submissions</h2>
+          <p className="muted" style={{ marginTop: 0 }}>
+            {forms.length} submission{forms.length === 1 ? "" : "s"} on file. Consent text is under
+            Customer entered (iPad).
           </p>
+          {forms.length > 0 ? (
+            <ul style={{ margin: 0, paddingLeft: "1.1rem" }}>
+              {forms.map((f) => (
+                <li key={f.id}>
+                  {f.createdAt.toLocaleString("en-GB", { timeZone: "Europe/London" })}
+                  {f.signedName ? ` · signed ${f.signedName}` : ""}
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
 
         <div className="panel">
