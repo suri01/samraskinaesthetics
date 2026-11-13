@@ -20,10 +20,10 @@ export const BRAND = {
   country: "GB",
 } as const;
 
-export type StaffRole = "owner" | "practitioner" | "receptionist" | "finance";
+export type StaffRole = "admin" | "practitioner" | "receptionist" | "finance";
 
 export const ROLE_PERMISSIONS: Record<StaffRole, string[]> = {
-  owner: ["*"],
+  admin: ["*"],
   practitioner: ["customers", "appointments", "treatments", "photos", "forms", "tasks", "dashboard"],
   receptionist: ["customers", "appointments", "forms", "tasks", "dashboard", "messages"],
   finance: ["customers", "invoices", "payments", "dashboard"],
@@ -32,4 +32,8 @@ export const ROLE_PERMISSIONS: Record<StaffRole, string[]> = {
 export function roleCan(role: StaffRole, permission: string): boolean {
   const perms = ROLE_PERMISSIONS[role] ?? [];
   return perms.includes("*") || perms.includes(permission);
+}
+
+export function isAdmin(role: StaffRole): boolean {
+  return role === "admin";
 }

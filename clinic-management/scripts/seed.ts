@@ -73,18 +73,18 @@ async function main() {
   const passwordHash = await hashPassword(password);
 
   const totpSecret = authenticator.generateSecret();
-  const ownerTotpEnc = encryptSecret(totpSecret);
+  const adminTotpEnc = encryptSecret(totpSecret);
 
-  const [owner, practitioner, receptionist, finance] = await db
+  const [admin, practitioner, receptionist, finance] = await db
     .insert(staffUsers)
     .values([
       {
         clinicId: clinic.id,
-        email: "owner@samra.demo",
+        email: "admin@samra.demo",
         name: "Samra Suri",
-        role: "owner",
+        role: "admin",
         passwordHash,
-        totpSecretEnc: ownerTotpEnc,
+        totpSecretEnc: adminTotpEnc,
         totpEnabled: true,
       },
       {
@@ -356,19 +356,19 @@ async function main() {
     metaJson: { note: "Fictional sample data only" },
   });
 
-  // Ensure owner still present (lint silence)
-  void owner;
+  // Ensure admin still present (lint silence)
+  void admin;
   void finance;
   void eq;
 
   console.log("\nSeed complete.\n");
   console.log("Staff logins (password for all):", password);
-  console.log("  owner@samra.demo        (TOTP MFA enabled)");
+  console.log("  admin@samra.demo         (TOTP MFA enabled · iPad registration)");
   console.log("  practitioner@samra.demo");
   console.log("  reception@samra.demo");
   console.log("  finance@samra.demo");
-  console.log("\nOwner TOTP secret (add to authenticator app):", totpSecret);
-  console.log("Owner TOTP sample code now:", authenticator.generate(totpSecret));
+  console.log("\nAdmin TOTP secret (add to authenticator app):", totpSecret);
+  console.log("Admin TOTP sample code now:", authenticator.generate(totpSecret));
   console.log("\nClinic id:", clinic.id);
 }
 

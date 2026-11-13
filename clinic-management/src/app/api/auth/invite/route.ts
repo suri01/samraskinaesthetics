@@ -9,8 +9,8 @@ import { hashPassword, randomToken, sha256 } from "@/lib/crypto";
 export async function POST(req: Request) {
   try {
     const staff = await requireStaff();
-    if (staff.role !== "owner") {
-      return NextResponse.json({ error: "Owner only" }, { status: 403 });
+    if (staff.role !== "admin") {
+      return NextResponse.json({ error: "Admin only" }, { status: 403 });
     }
     const body = await req.json();
     const email = String(body.email ?? "")
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       .toLowerCase();
     const name = String(body.name ?? "").trim();
     const role = String(body.role ?? "receptionist") as
-      | "owner"
+      | "admin"
       | "practitioner"
       | "receptionist"
       | "finance";

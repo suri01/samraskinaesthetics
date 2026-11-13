@@ -6,11 +6,11 @@ import { requireStaffPage } from "@/lib/auth/staff";
 
 export default async function AuditPage() {
   const ctx = await requireStaffPage();
-  if (ctx.role !== "owner") {
+  if (ctx.role !== "admin") {
     return (
       <StaffShell>
         <h1 className="page-title">Audit log</h1>
-        <p className="error">Owner role required.</p>
+        <p className="error">Admin role required.</p>
       </StaffShell>
     );
   }

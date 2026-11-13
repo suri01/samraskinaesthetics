@@ -13,7 +13,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const staffRoleEnum = pgEnum("staff_role", [
-  "owner",
+  "admin",
   "practitioner",
   "receptionist",
   "finance",
@@ -501,7 +501,7 @@ export const clinicSettings = pgTable("clinic_settings", {
     .$type<Record<string, string[]>>()
     .notNull()
     .default({
-      owner: ["*"],
+      admin: ["*"],
       practitioner: ["customers", "appointments", "treatments", "photos", "forms"],
       receptionist: ["customers", "appointments", "forms", "tasks"],
       finance: ["customers", "invoices", "payments"],

@@ -6,12 +6,19 @@ import { writeAudit } from "@/lib/audit";
 import { AuthError, requireStaff } from "@/lib/auth/staff";
 import { randomSetupCode, randomToken, sha256 } from "@/lib/crypto";
 
+function requireAdminRole(role: string) {
+  if (role !== "admin") {
+    return NextResponse.json({ error: "Admin only" }, { status: 403 });
+  }
+  return null;
+}
+
 export async function GET() {
   try {
     const staff = await requireStaff();
-    if (staff.role !== "owner" && staff.role !== "receptionist" && staff.role !== "practitioner") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    const denied = requireAdminRole(staff.role);
+    if (denied) return denied;
+
     const devices = await db
       .select({
         id: ipadDevices.id,
@@ -32,13 +39,13 @@ export async function GET() {
   }
 }
 
-/** Create a one-time registration link for a named clinic iPad. */
+/** Create a one-time registration link/code for a named clinic iPad (admin only). */
 export async function POST(req: Request) {
   try {
     const staff = await requireStaff();
-    if (staff.role !== "owner" && staff.role !== "receptionist" && staff.role !== "practitioner") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    const denied = requireAdminRole(staff.role);
+    if (denied) return denied;
+
     const body = await req.json().catch(() => ({}));
     const name = String(body.name ?? "").trim();
     if (!name) return NextResponse.json({ error: "Device name required" }, { status: 400 });
@@ -87,18 +94,15 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
   try {
     const staff = await requireStaff();
-    if (staff.role !== "owner" && staff.role !== "receptionist" && staff.role !== "practitioner") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    const denied = requireAdminRole(staff.role);
+    if (denied) return denied;
+
     const body = await req.json();
     const id = String(body.id ?? "");
     const active = Boolean(body.active);
     if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
 
-    await db
-      .update(ipadDevices)
-      .set({ active })
-      .where(eq(ipadDevices.id, id));
+    await db.update(ipadDevices).set({ active }).where(eq(ipadDevices.id, id));
 
     await writeAudit({
       clinicId: staff.clinicId,
