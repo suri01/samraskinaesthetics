@@ -152,7 +152,6 @@ async function main() {
           allergies: "Penicillin (reported)",
           medications: "None",
           skinGoals: "Even skin tone",
-          gpName: "Sample Medical Centre",
         },
         registeredVia: "booking",
         intakeCompletedAt: new Date(Date.now() - 40 * 24 * 60 * 60 * 1000),

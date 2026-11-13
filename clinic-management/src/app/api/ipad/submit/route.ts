@@ -49,9 +49,6 @@ export async function POST(req: Request) {
         allergies: medical.allergies ? String(medical.allergies) : null,
         medicalNotes: medical.skinGoals ? String(medical.skinGoals) : null,
         medicalHistoryJson: {
-          gpName: String(medical.gpName ?? ""),
-          gpAddress: String(medical.gpAddress ?? details.gpAddress ?? ""),
-          contactGp: String(medical.contactGp ?? details.contactGp ?? ""),
           medications: String(medical.medications ?? ""),
           allergies: String(medical.allergies ?? ""),
           conditions: String(medical.conditions ?? ""),

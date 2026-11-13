@@ -80,9 +80,9 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
           </p>
           {customer.medicalHistoryJson ? (
             <p className="muted" style={{ margin: 0 }}>
-              History on file: GP {customer.medicalHistoryJson.gpName || "—"} · Meds{" "}
-              {customer.medicalHistoryJson.medications || "—"} · Conditions{" "}
-              {customer.medicalHistoryJson.conditions || "—"}
+              History on file: Meds {customer.medicalHistoryJson.medications || "—"} · Conditions{" "}
+              {customer.medicalHistoryJson.conditions || "—"} · Emergency{" "}
+              {customer.medicalHistoryJson.emergencyName || "—"}
             </p>
           ) : null}
           {customer.upsellInterestJson && customer.upsellInterestJson.length > 0 ? (

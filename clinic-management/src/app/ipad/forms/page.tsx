@@ -45,7 +45,6 @@ export default async function IpadFormsPage() {
             emailOptIn: ctx.emailOptIn,
           }}
           initialMedical={{
-            gpName: mh.gpName ?? "",
             medications: mh.medications ?? "",
             allergies: mh.allergies ?? ctx.allergies ?? "",
             conditions: mh.conditions ?? "",

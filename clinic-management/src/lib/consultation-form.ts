@@ -23,9 +23,6 @@ export type ConsultationAnswers = {
     line1: string;
     city: string;
     postcode: string;
-    gpName: string;
-    gpAddress: string;
-    contactGp: "" | "Y" | "N";
     emergencyName: string;
     emergencyPhone: string;
     whatsappOptIn: boolean;
@@ -276,7 +273,6 @@ export function createEmptyConsultation(partial?: {
   medicalExtras?: Partial<{
     allergies: string;
     medications: string;
-    gpName: string;
     emergencyName: string;
     emergencyPhone: string;
     pregnantBreastfeeding: string;
@@ -294,9 +290,6 @@ export function createEmptyConsultation(partial?: {
       line1: "",
       city: "",
       postcode: "",
-      gpName: m.gpName ?? "",
-      gpAddress: "",
-      contactGp: "",
       emergencyName: m.emergencyName ?? "",
       emergencyPhone: m.emergencyPhone ?? "",
       whatsappOptIn: false,

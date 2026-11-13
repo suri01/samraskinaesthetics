@@ -48,7 +48,6 @@ type InitialDetails = {
 };
 
 type InitialMedical = {
-  gpName: string;
   medications: string;
   allergies: string;
   conditions: string;
@@ -93,14 +92,12 @@ export function IpadCustomerFlow(props: {
     createEmptyConsultation({
       details: {
         ...props.initialDetails,
-        gpName: props.initialMedical.gpName,
         emergencyName: props.initialMedical.emergencyName,
         emergencyPhone: props.initialMedical.emergencyPhone,
       },
       medicalExtras: {
         allergies: props.initialMedical.allergies,
         medications: props.initialMedical.medications,
-        gpName: props.initialMedical.gpName,
         emergencyName: props.initialMedical.emergencyName,
         emergencyPhone: props.initialMedical.emergencyPhone,
         pregnantBreastfeeding: props.initialMedical.pregnantBreastfeeding,
@@ -219,9 +216,6 @@ export function IpadCustomerFlow(props: {
         consultation: form,
         details: form.details,
         medical: {
-          gpName: form.details.gpName,
-          gpAddress: form.details.gpAddress,
-          contactGp: form.details.contactGp,
           medications: form.medical.medications,
           allergies: form.medical.allergies,
           conditions: form.medical.pastHistory,
@@ -380,29 +374,6 @@ export function IpadCustomerFlow(props: {
                     autoComplete="postal-code"
                   />
                 </div>
-              </div>
-              <div className="field">
-                <label htmlFor="gpName">GP name</label>
-                <input
-                  id="gpName"
-                  value={form.details.gpName}
-                  onChange={(e) => setDetails("gpName", e.target.value)}
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="gpAddress">GP address / practice</label>
-                <input
-                  id="gpAddress"
-                  value={form.details.gpAddress}
-                  onChange={(e) => setDetails("gpAddress", e.target.value)}
-                />
-              </div>
-              <div className="field">
-                <span className="field__label">Permission to contact your GP?</span>
-                <YnToggle
-                  value={form.details.contactGp}
-                  onChange={(v) => setDetails("contactGp", v)}
-                />
               </div>
               <div className="field-row">
                 <div className="field">
