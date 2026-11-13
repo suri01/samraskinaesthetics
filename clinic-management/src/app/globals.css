@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  /* Aligned to Samra logo champagne / gold */
-  --champagne: #e6d9cb;
-  --champagne-deep: #d4c4b2;
+  /* Sampled from logo artwork backdrop so the mark blends into the plate */
+  --champagne: #dacfc2;
+  --champagne-deep: #cfc0b0;
   --ivory: #f4efe8;
   --pearl: #f7f4ef;
   --mist: #ebe4da;
@@ -73,7 +73,8 @@ a {
 .brand-mark {
   display: block;
   line-height: 0;
-  background: transparent;
+  /* Same tone as gate/rail champagne plate — hides PNG edges */
+  background: var(--champagne);
 }
 
 .brand-mark__img {
@@ -83,20 +84,17 @@ a {
 }
 
 .brand-mark--gate {
-  width: min(15.5rem, 62vw);
+  width: min(17.5rem, 68vw);
   margin-inline: auto;
-  filter: drop-shadow(0 10px 22px rgba(26, 33, 28, 0.12));
 }
 
 .brand-mark--rail {
   width: 100%;
-  max-width: 10.5rem;
-  filter: drop-shadow(0 6px 14px rgba(26, 33, 28, 0.1));
+  max-width: 11.5rem;
 }
 
 .brand-mark--masthead {
-  width: min(13rem, 52vw);
-  filter: drop-shadow(0 8px 18px rgba(26, 33, 28, 0.1));
+  width: min(14rem, 55vw);
 }
 
 /* —— Gate compositions (home / login / iPad entry) —— */
@@ -122,9 +120,10 @@ a {
 }
 
 .gate__brand {
+  /* Soft plate matched to logo champagne fill — mark reads as part of the field */
   background:
-    radial-gradient(520px 220px at 50% 0%, rgba(255, 255, 255, 0.35), transparent 70%),
-    linear-gradient(180deg, var(--champagne) 0%, var(--champagne-deep) 100%);
+    radial-gradient(520px 220px at 50% 0%, rgba(255, 255, 255, 0.22), transparent 72%),
+    linear-gradient(180deg, var(--champagne) 0%, var(--champagne) 55%, var(--champagne-deep) 100%);
   padding: clamp(1.75rem, 4vw, 2.4rem) 1.5rem 1.35rem;
   text-align: center;
 }
@@ -325,8 +324,8 @@ a {
 
 .staff-nav__brand {
   background:
-    radial-gradient(280px 120px at 50% 0%, rgba(255, 255, 255, 0.28), transparent 70%),
-    linear-gradient(180deg, var(--champagne) 0%, var(--champagne-deep) 100%);
+    radial-gradient(280px 120px at 50% 0%, rgba(255, 255, 255, 0.2), transparent 70%),
+    linear-gradient(180deg, var(--champagne) 0%, var(--champagne) 60%, var(--champagne-deep) 100%);
   padding: 1.15rem 1rem 1rem;
   border-bottom: 1px solid rgba(26, 33, 28, 0.06);
 }

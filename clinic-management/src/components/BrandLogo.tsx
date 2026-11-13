@@ -13,8 +13,8 @@ type BrandLogoProps = {
 
 /**
  * Brand mark only — no duplicate wordmark text.
- * Designed to sit on a champagne/taupe plane that matches the artwork
- * background so the PNG does not read as a floating photo.
+ * Artwork is filled with champagne that matches the gate/rail plate so
+ * the logo blends into the brand field instead of reading as a sticker.
  */
 export function BrandLogo({
   href = "/",
@@ -28,7 +28,7 @@ export function BrandLogo({
         src={placement === "rail" ? "/brand/samra-logo-320.png" : "/brand/samra-logo.png"}
         alt={BRAND.name}
         width={placement === "rail" ? 320 : 800}
-        height={placement === "rail" ? 237 : 591}
+        height={placement === "rail" ? 236 : 591}
         priority={priority}
         className="brand-mark__img"
       />
