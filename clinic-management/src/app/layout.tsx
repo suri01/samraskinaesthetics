@@ -19,8 +19,12 @@ export const metadata: Metadata = {
     default: `${BRAND.name} · Clinic`,
     template: `%s · ${BRAND.shortName} Clinic`,
   },
-  description: "Clinic management for Samra Skin & Aesthetics (internal).",
+  description: "Clinic management for Samra Skin & Aesthetics.",
   robots: { index: false, follow: false },
+  icons: {
+    icon: "/brand/favicon-64.png",
+    apple: "/brand/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

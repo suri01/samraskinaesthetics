@@ -196,10 +196,39 @@ a {
   backdrop-filter: blur(10px);
 }
 
-.staff-nav__brand {
-  font-family: var(--font-display), serif;
-  font-size: 1.35rem;
-  margin: 0 0 0.25rem;
+.brand-logo-link {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.brand-logo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.brand-logo--nav {
+  width: 9.5rem;
+  height: auto;
+  margin: 0 0 1.25rem;
+}
+
+.brand-logo--card {
+  width: min(13rem, 70vw);
+  height: auto;
+  margin: 0 auto 0.75rem;
+}
+
+.brand-logo--hero {
+  width: min(18rem, 72vw);
+  height: auto;
+  margin: 0 0 1.25rem;
+}
+
+.staff-nav__brand-wrap {
+  margin: 0 0 0.35rem;
 }
 
 .staff-nav__sub {

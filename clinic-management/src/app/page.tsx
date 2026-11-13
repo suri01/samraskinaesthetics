@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
 import { BRAND } from "@/lib/constants";
 
 export default function HomePage() {
   return (
     <main className="shell" style={{ padding: "4rem 0" }}>
+      <BrandLogo href={null} size="hero" priority />
       <p className="badge badge--gold">Clinic management</p>
       <h1 className="page-title" style={{ marginTop: "1rem" }}>
         {BRAND.name}

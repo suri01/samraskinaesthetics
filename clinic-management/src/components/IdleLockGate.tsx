@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export function IdleLockGate({ name }: { name: string }) {
   const router = useRouter();
@@ -31,6 +32,9 @@ export function IdleLockGate({ name }: { name: string }) {
   return (
     <main className="ipad-shell">
       <div className="ipad-card stack">
+        <div style={{ textAlign: "center" }}>
+          <BrandLogo href={null} size="card" />
+        </div>
         <p className="badge">Session locked</p>
         <h1>Welcome back, {name.split(" ")[0]}</h1>
         <p className="muted">Idle for 15 minutes. Re-enter your password to continue.</p>

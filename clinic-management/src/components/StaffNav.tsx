@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { BrandLogo } from "@/components/BrandLogo";
 
 const links = [
   { href: "/staff", label: "Dashboard", exact: true },
@@ -21,7 +22,9 @@ export function StaffNav({ staffName, role }: { staffName: string; role: string 
 
   return (
     <aside className="staff-nav">
-      <p className="staff-nav__brand">Samra</p>
+      <div className="staff-nav__brand-wrap">
+        <BrandLogo href="/staff" size="nav" />
+      </div>
       <p className="staff-nav__sub">Clinic</p>
       <ul>
         {links.map((l) => {

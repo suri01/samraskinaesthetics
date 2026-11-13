@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { BrandLogo } from "@/components/BrandLogo";
 import { IpadPasskeyUnlock } from "@/components/IpadPasskeyUnlock";
 import { IpadUnlockForm } from "@/components/IpadUnlockForm";
 import { getIpadContext } from "@/lib/auth/ipad";
@@ -14,7 +15,10 @@ export default async function IpadEntryPage() {
   return (
     <main className="ipad-shell">
       <div className="ipad-card stack">
-        <p className="badge badge--gold">Clinic iPad</p>
+        <div style={{ textAlign: "center" }}>
+          <BrandLogo href={null} size="card" priority />
+          <p className="badge badge--gold">Clinic iPad</p>
+        </div>
         {!device ? (
           <>
             <h1>Authenticate this device</h1>
