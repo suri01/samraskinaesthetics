@@ -38,11 +38,13 @@ export function LoginForm() {
   return (
     <form className="stack" onSubmit={onSubmit}>
       <div className="field">
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email">Username</label>
         <input
           id="email"
-          type="email"
+          type="text"
           autoComplete="username"
+          autoCapitalize="none"
+          spellCheck={false}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required

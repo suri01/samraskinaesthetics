@@ -2,7 +2,6 @@ import { config } from "dotenv";
 config({ path: ".env" });
 
 import { eq } from "drizzle-orm";
-import { authenticator } from "otplib";
 import { db } from "../src/db";
 import {
   appointments,
@@ -27,7 +26,7 @@ import {
   treatmentRecords,
   webauthnChallenges,
 } from "../src/db/schema";
-import { encryptSecret, hashPassword } from "../src/lib/crypto";
+import { hashPassword } from "../src/lib/crypto";
 import { DEFAULT_TREATMENTS } from "../src/lib/treatments-shared";
 
 async function main() {
@@ -75,42 +74,22 @@ async function main() {
   const password = "ClinicDemo2026!";
   const passwordHash = await hashPassword(password);
 
-  const totpSecret = authenticator.generateSecret();
-  const adminTotpEnc = encryptSecret(totpSecret);
-
-  const [admin, practitioner, receptionist, finance] = await db
+  const [admin, practitioner] = await db
     .insert(staffUsers)
     .values([
       {
         clinicId: clinic.id,
-        email: "admin@samra.demo",
-        name: "Samra Suri",
+        email: "shahidsuri",
+        name: "Shahid Suri",
         role: "admin",
         passwordHash,
-        totpSecretEnc: adminTotpEnc,
-        totpEnabled: true,
+        totpEnabled: false,
       },
       {
         clinicId: clinic.id,
-        email: "practitioner@samra.demo",
-        name: "Alex Morgan",
+        email: "samrasuri",
+        name: "Samra Suri",
         role: "practitioner",
-        passwordHash,
-        totpEnabled: false,
-      },
-      {
-        clinicId: clinic.id,
-        email: "reception@samra.demo",
-        name: "Jordan Lee",
-        role: "receptionist",
-        passwordHash,
-        totpEnabled: false,
-      },
-      {
-        clinicId: clinic.id,
-        email: "finance@samra.demo",
-        name: "Casey Patel",
-        role: "finance",
         passwordHash,
         totpEnabled: false,
       },
@@ -121,8 +100,7 @@ async function main() {
     clinicId: clinic.id,
     retentionYearsClinical: 8,
     retentionYearsFinance: 7,
-    consentTemplate:
-      "Patient consent is captured on the iPad consultation journey (medical discussion, expectations, risks, aftercare, and signature). Reference: docs/forms/consultation-consent-aftercare.pdf.",
+    consentTemplate: "",
   });
 
   await db.insert(clinicTreatments).values(
@@ -344,7 +322,7 @@ async function main() {
     {
       clinicId: clinic.id,
       customerId: custA.id,
-      assigneeId: receptionist.id,
+      assigneeId: admin.id,
       title: "Confirm Amelia’s consultation tomorrow WhatsApp (if opted in)",
       dueAt: today10,
       status: "open",
@@ -378,19 +356,12 @@ async function main() {
     metaJson: { note: "Fictional sample data only" },
   });
 
-  // Ensure admin still present (lint silence)
-  void admin;
-  void finance;
   void eq;
 
   console.log("\nSeed complete.\n");
-  console.log("Staff logins (password for all):", password);
-  console.log("  admin@samra.demo         (TOTP MFA enabled · iPad registration)");
-  console.log("  practitioner@samra.demo");
-  console.log("  reception@samra.demo");
-  console.log("  finance@samra.demo");
-  console.log("\nAdmin TOTP secret (add to authenticator app):", totpSecret);
-  console.log("Admin TOTP sample code now:", authenticator.generate(totpSecret));
+  console.log("Staff logins (password for both):", password);
+  console.log("  shahidsuri   — Shahid Suri (admin)");
+  console.log("  samrasuri    — Samra Suri (practitioner)");
   console.log("\nClinic id:", clinic.id);
 }
 

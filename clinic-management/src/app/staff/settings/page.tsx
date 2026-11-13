@@ -25,7 +25,7 @@ export default async function SettingsPage() {
   return (
     <StaffShell>
       <h1 className="page-title">Settings</h1>
-      <p className="page-lede">Clinic security, staff access, consent, treatments, and registered iPads.</p>
+      <p className="page-lede">Clinic security, staff access, treatments, and registered iPads.</p>
       <div className="stack">
         <div className="panel">
           <TreatmentMenuPanel initialItems={treatments} canEdit={canEditTreatments} />
@@ -67,12 +67,14 @@ export default async function SettingsPage() {
               </tr>
             </thead>
             <tbody>
-              {Object.entries(ROLE_PERMISSIONS).map(([role, perms]) => (
-                <tr key={role}>
-                  <td style={{ textTransform: "capitalize" }}>{role}</td>
-                  <td className="muted">{perms.join(", ")}</td>
-                </tr>
-              ))}
+              {Object.entries(ROLE_PERMISSIONS)
+                .filter(([role]) => role === "admin" || role === "practitioner")
+                .map(([role, perms]) => (
+                  <tr key={role}>
+                    <td style={{ textTransform: "capitalize" }}>{role}</td>
+                    <td className="muted">{perms.join(", ")}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
           <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}>Staff</h3>
@@ -84,13 +86,6 @@ export default async function SettingsPage() {
               </li>
             ))}
           </ul>
-        </div>
-
-        <div className="panel stack">
-          <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 500 }}>
-            Consent template
-          </h2>
-          <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{settings?.consentTemplate}</p>
         </div>
 
         <div className="panel stack">

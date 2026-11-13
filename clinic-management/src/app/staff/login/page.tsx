@@ -11,7 +11,7 @@ export default async function StaffLoginPage() {
   return (
     <GateShell eyebrow="Staff sign in" logoHref="/">
       <h1>Sign in</h1>
-      <p className="gate__lede">Use your clinic email and password.</p>
+      <p className="gate__lede">Use your clinic username and password.</p>
       <LoginForm />
       <p className="muted" style={{ margin: 0, fontSize: "0.9rem" }}>
         <Link href="/">← Back</Link>

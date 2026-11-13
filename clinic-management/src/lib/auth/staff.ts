@@ -198,7 +198,7 @@ export async function loginStaff(input: {
   const user = users[0];
   if (!user || !user.active) {
     await hitRateLimit(rateKey, "login");
-    return { error: "Invalid email or password." };
+    return { error: "Invalid username or password." };
   }
 
   if (user.lockedUntil && user.lockedUntil > new Date()) {
@@ -216,7 +216,7 @@ export async function loginStaff(input: {
         lockedUntil: failed >= 8 ? new Date(Date.now() + 15 * 60 * 1000) : null,
       })
       .where(eq(staffUsers.id, user.id));
-    return { error: "Invalid email or password." };
+    return { error: "Invalid username or password." };
   }
 
   if (user.totpEnabled) {
