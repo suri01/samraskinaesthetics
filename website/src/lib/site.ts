@@ -22,11 +22,14 @@ export const site = {
     { day: "Saturday", time: "By appointment" },
     { day: "Sunday", time: "Closed" },
   ],
+  /** Clinic pin (exact) — do not geocode “Marlow House” by name. */
+  mapLat: 51.505415234320566,
+  mapLng: -0.7114344147665623,
   /** Short Google Maps share link for “Open in Maps”. */
   mapUrl: "https://maps.app.goo.gl/J8EutYwVKfWdrrQp7",
-  /** Embeddable map for the contact page (no API key). */
+  /** Embeddable map pinned to mapLat/mapLng (no API key). */
   mapEmbedUrl:
-    "https://www.google.com/maps?q=Marlow+House%2C+Windsor+Road%2C+Maidenhead%2C+SL6+2EW&output=embed",
+    "https://www.google.com/maps?q=51.505415234320566,-0.7114344147665623&z=17&output=embed",
   bookingUrl: "/contact#book",
   social: {
     instagram: "",
