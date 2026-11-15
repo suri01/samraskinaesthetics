@@ -511,17 +511,26 @@ img {
   background: var(--blush);
 }
 
-.map-placeholder {
-  min-height: 16rem;
-  border: 1px dashed rgba(22, 32, 25, 0.25);
-  border-radius: var(--radius);
+.map-frame {
   display: grid;
-  place-items: center;
-  text-align: center;
-  padding: 2rem;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.45), rgba(231, 236, 230, 0.65));
-  color: rgba(22, 32, 25, 0.7);
+  gap: 0.85rem;
+}
+
+.map-frame iframe {
+  width: 100%;
+  min-height: 16rem;
+  border: 0;
+  border-radius: var(--radius);
+  background: rgba(231, 236, 230, 0.65);
+}
+
+.hp {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 .contact-form {
