@@ -16,7 +16,7 @@ npm start        # serve production build
 | Route | Purpose |
 |---|---|
 | `/` | Brand-first home + treatment highlights + light social proof |
-| `/treatments` | Category index with placeholder blurbs |
+| `/treatments` | Real clinic menu (microneedling, peels, hydration, consultations) |
 | `/about` | Clinic / practitioner story + credential placeholders |
 | `/contact` | Contact form, phone/email/map placeholders, booking CTA |
 

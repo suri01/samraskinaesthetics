@@ -379,6 +379,17 @@ img {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--copper);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.treatment-item__price {
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--copper);
+  text-align: right;
+  white-space: nowrap;
 }
 
 .quote-strip {

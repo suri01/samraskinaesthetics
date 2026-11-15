@@ -40,39 +40,6 @@ export const site = {
   ],
 } as const;
 
-export const treatments = [
-  {
-    slug: "skin-consultations",
-    name: "Skin consultations",
-    blurb:
-      "A considered assessment of your skin, goals, and the safest next steps — with clear recommendations, not pressure.",
-  },
-  {
-    slug: "facials-and-peels",
-    name: "Facials & peels",
-    blurb:
-      "Treatment facial protocols and peels tailored to texture, glow, and calm — paced for your skin’s tolerance.",
-  },
-  {
-    slug: "injectables",
-    name: "Injectables",
-    blurb:
-      "Subtle anti-wrinkle and contour work where appropriate, with a preference for soft, balanced results.",
-  },
-  {
-    slug: "skin-boosters",
-    name: "Skin boosters & regeneration",
-    blurb:
-      "Hydration and quality-focused treatments that support skin from within — discussed carefully at consultation.",
-  },
-  {
-    slug: "medical-skincare",
-    name: "Medical-grade skincare",
-    blurb:
-      "Home-care routines guided by what your skin actually needs, with products introduced gradually.",
-  },
-] as const;
-
 export const about = {
   practitionerName: "Samra Suri",
   role: "Aesthetic practitioner · placeholder title",

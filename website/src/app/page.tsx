@@ -1,7 +1,10 @@
 import Link from "next/link";
-import { site, treatments } from "@/lib/site";
+import { site } from "@/lib/site";
+import { TREATMENT_MENU_TAGLINE, treatmentCategoryHighlights } from "@/lib/treatments";
 
 export default function HomePage() {
+  const highlights = treatmentCategoryHighlights();
+
   return (
     <>
       <section className="hero" aria-label="Introduction">
@@ -25,13 +28,10 @@ export default function HomePage() {
         <div className="shell">
           <p className="section__eyebrow">Treatments</p>
           <h2 className="section__title">Care shaped around your skin</h2>
-          <p className="section__lede">
-            Start with a consultation. These are placeholder categories for the
-            MVP — Samra’s final offer list will replace them.
-          </p>
+          <p className="section__lede">{TREATMENT_MENU_TAGLINE}</p>
 
           <div className="treatment-list">
-            {treatments.slice(0, 4).map((item) => (
+            {highlights.map((item) => (
               <Link
                 key={item.slug}
                 href="/treatments"
