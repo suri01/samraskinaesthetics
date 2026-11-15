@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -12,12 +13,21 @@ export function Header() {
   return (
     <header className="site-header">
       <div className="site-header__inner">
-        <Link href="/" className="site-logo" onClick={() => setOpen(false)}>
-          <span className="site-logo__mark">S</span>
-          <span className="site-logo__text">
-            <span className="site-logo__name">{site.shortName}</span>
-            <span className="site-logo__sub">Skin &amp; Aesthetics</span>
-          </span>
+        <Link
+          href="/"
+          className="site-logo"
+          aria-label={site.name}
+          onClick={() => setOpen(false)}
+        >
+          <Image
+            src="/brand/samra-logo-320.png"
+            alt={site.name}
+            width={640}
+            height={498}
+            priority
+            unoptimized
+            className="site-logo__img"
+          />
         </Link>
 
         <button
