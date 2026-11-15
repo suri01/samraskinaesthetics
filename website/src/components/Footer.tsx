@@ -28,9 +28,11 @@ export function Footer() {
           <div>
             <p className="site-footer__label">Contact</p>
             <ul>
-              <li>
-                <a href={site.phoneHref}>{site.phoneDisplay}</a>
-              </li>
+              {site.phoneDisplay && site.phoneHref ? (
+                <li>
+                  <a href={site.phoneHref}>{site.phoneDisplay}</a>
+                </li>
+              ) : null}
               <li>
                 <a href={`mailto:${site.email}`}>{site.email}</a>
               </li>
@@ -49,8 +51,7 @@ export function Footer() {
         </p>
         <p>
           Privacy note: messages sent via the contact form are used only to
-          respond to your enquiry. A full privacy policy will follow before
-          launch.
+          respond to your enquiry.
         </p>
       </div>
     </footer>

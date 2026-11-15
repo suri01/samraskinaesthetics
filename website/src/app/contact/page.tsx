@@ -5,10 +5,12 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact / Book",
   description:
-    "Contact Samra Skin & Aesthetics — send a message, call, or book a consultation.",
+    "Contact Samra Skin & Aesthetics in Maidenhead — send an enquiry, email, or find us at Marlow House, Windsor Road.",
 };
 
 export default function ContactPage() {
+  const hasPhone = Boolean(site.phoneDisplay && site.phoneHref);
+
   return (
     <>
       <section className="page-hero">
@@ -16,8 +18,8 @@ export default function ContactPage() {
           <p className="section__eyebrow">Contact / Book</p>
           <h1>Say hello, or reserve a consultation</h1>
           <p>
-            Use the form, email, or phone. A live booking link or embed can
-            replace the phone CTA once Samra chooses a tool.
+            Send an enquiry or email us directly. We’re at Marlow House in
+            Maidenhead, by appointment.
           </p>
         </div>
       </section>
@@ -28,8 +30,8 @@ export default function ContactPage() {
             <p className="section__eyebrow">Message</p>
             <h2 className="section__title">Send an enquiry</h2>
             <p className="section__lede" style={{ marginBottom: "1.5rem" }}>
-              Form delivery is placeholder for MVP — Resend or Formspree can be
-              wired next. Required fields: name, email, message, consent.
+              Tell us what you’re looking for. Required: name, email, message,
+              and consent. We’ll reply by email.
             </p>
             <ContactForm />
           </div>
@@ -38,10 +40,12 @@ export default function ContactPage() {
             <p className="section__eyebrow">Visit</p>
             <h2 className="section__title">Clinic details</h2>
             <ul className="contact-details">
-              <li>
-                <strong>Phone</strong>
-                <a href={site.phoneHref}>{site.phoneDisplay}</a>
-              </li>
+              {hasPhone ? (
+                <li>
+                  <strong>Phone</strong>
+                  <a href={site.phoneHref}>{site.phoneDisplay}</a>
+                </li>
+              ) : null}
               <li>
                 <strong>Email</strong>
                 <a href={`mailto:${site.email}`}>{site.email}</a>
@@ -65,33 +69,32 @@ export default function ContactPage() {
               ))}
             </ul>
 
-            <div className="map-placeholder" style={{ marginTop: "1.75rem" }}>
-              <div>
-                <p style={{ margin: "0 0 0.75rem", fontFamily: "var(--font-display)" }}>
-                  Map placeholder
-                </p>
-                <p style={{ margin: "0 0 1rem" }}>
-                  Embed Google Maps once the clinic address is confirmed.
-                </p>
-                <a
-                  className="btn btn--ghost btn--compact"
-                  href={site.mapUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Open maps link
-                </a>
-              </div>
+            <div className="map-frame" style={{ marginTop: "1.75rem" }}>
+              <iframe
+                title="Map — Samra Skin & Aesthetics, Marlow House, Maidenhead"
+                src={site.mapEmbedUrl}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+              <a
+                className="btn btn--ghost btn--compact"
+                href={site.mapUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open in Google Maps
+              </a>
             </div>
 
             <div className="panel" style={{ marginTop: "1.5rem" }}>
-              <h3>Book now</h3>
+              <h3>Book a consultation</h3>
               <p>
-                For MVP, booking is phone / enquiry. Point this CTA at Cal.com,
-                Jane, or clinic software when ready.
+                Prefer email? Write to us or use the form — we’ll help you find
+                a suitable appointment time.
               </p>
-              <a href={site.phoneHref} className="btn btn--primary">
-                Call to book
+              <a href={`mailto:${site.email}`} className="btn btn--primary">
+                Email {site.email}
               </a>
             </div>
           </div>

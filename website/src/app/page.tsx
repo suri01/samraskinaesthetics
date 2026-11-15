@@ -74,15 +74,15 @@ export default function HomePage() {
             <p className="section__eyebrow">Visit</p>
             <h2 className="section__title">Ready when you are</h2>
             <p className="section__lede">
-              Call, email, or send a short note. Online booking can plug in
-              later (Cal.com, Jane, or clinic software).
+              Email us or send a short note from the contact page. We’re at
+              Marlow House, Maidenhead — by appointment.
             </p>
             <div className="hero__actions" style={{ marginTop: "1.75rem" }}>
               <Link href="/contact" className="btn btn--primary">
                 Contact / Book
               </Link>
-              <a href={site.phoneHref} className="btn btn--ghost">
-                {site.phoneDisplay}
+              <a href={`mailto:${site.email}`} className="btn btn--ghost">
+                {site.email}
               </a>
             </div>
           </div>
@@ -95,11 +95,11 @@ export default function HomePage() {
               </li>
               <li>
                 <strong>Location</strong>
-                {site.addressLines.join(", ")}
+                {site.addressPlain}
               </li>
               <li>
                 <strong>Hours</strong>
-                By appointment — full schedule coming soon
+                By appointment
               </li>
             </ul>
           </div>

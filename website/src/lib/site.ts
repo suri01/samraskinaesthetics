@@ -5,20 +5,28 @@ export const site = {
   description:
     "A calm aesthetics clinic focused on natural-looking results, clear advice, and care that respects your skin.",
   domain: "samraskinaesthetics.com",
-  phoneDisplay: "Phone number coming soon",
-  phoneHref: "tel:+440000000000",
+  /** Set when a public clinic number is ready; empty hides phone CTAs. */
+  phoneDisplay: "",
+  phoneHref: "",
   email: "hello@samraskinaesthetics.com",
   addressLines: [
-    "Clinic address to be confirmed",
-    "Town / postcode placeholder",
+    "Marlow House",
+    "Windsor Road",
+    "Maidenhead, SL6 2EW",
     "United Kingdom",
   ],
+  addressPlain:
+    "Marlow House, Windsor Road, Maidenhead, SL6 2EW, United Kingdom",
   hours: [
     { day: "Monday – Friday", time: "By appointment" },
     { day: "Saturday", time: "By appointment" },
     { day: "Sunday", time: "Closed" },
   ],
-  mapUrl: "https://maps.google.com",
+  /** Short Google Maps share link for “Open in Maps”. */
+  mapUrl: "https://maps.app.goo.gl/J8EutYwVKfWdrrQp7",
+  /** Embeddable map for the contact page (no API key). */
+  mapEmbedUrl:
+    "https://www.google.com/maps?q=Marlow+House%2C+Windsor+Road%2C+Maidenhead%2C+SL6+2EW&output=embed",
   bookingUrl: "/contact#book",
   social: {
     instagram: "",
