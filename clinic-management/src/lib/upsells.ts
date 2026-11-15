@@ -1,0 +1,38 @@
+import {
+  formatTreatmentPrice,
+  relatedTreatmentsForService,
+  type Treatment,
+} from "@/lib/treatments-shared";
+
+export type UpsellOffer = {
+  sku: string;
+  title: string;
+  blurb: string;
+  pricePence: number;
+};
+
+function toOffer(t: Treatment): UpsellOffer {
+  return {
+    sku: t.sku,
+    title: t.serviceName,
+    blurb: [t.blurb, formatTreatmentPrice(t)].filter(Boolean).join(" · "),
+    pricePence: t.pricePence ?? 0,
+  };
+}
+
+/**
+ * Related treatment suggestions drawn from the clinic menu,
+ * excluding the service already booked.
+ */
+export function upsellsForService(items: Treatment[], serviceName: string): UpsellOffer[] {
+  const related = relatedTreatmentsForService(items, serviceName).map(toOffer);
+  if (related.length > 0) return related;
+  return [
+    {
+      sku: "next-treatment",
+      title: "Plan your next treatment",
+      blurb: "Reserve a preferred follow-up with reception.",
+      pricePence: 0,
+    },
+  ];
+}
